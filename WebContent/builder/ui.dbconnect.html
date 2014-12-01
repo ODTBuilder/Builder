@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DB dialog frame</title>
+
+
+<!-- jQuery 세팅 -->
+<script src='../includes/jQuery/jquery-1.11.1.js'></script>
+<!-- jQueryUI 세팅 -->
+<script src='../includes/jQueryUI/jquery-ui.js'></script>
+<link rel="stylesheet" type="text/css" href="../includes/jQueryUI/jquery-ui.css">
+
+
+<!-- Custom Setting  -->
+<script src='ui/basemap.js'></script>
+
+<style>
+	.dbconnect_tabs{
+	font-size:70%
+	}
+	.dbconnect_form{
+	width:250px;
+	}
+	.ui-tabs-vertical { 
+	/* width: 55em; */
+	width: 600px;
+	 }
+  .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em;}
+  .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+  .ui-tabs-vertical .ui-tabs-nav li a { display:block; font-size:70%; width:80%;}
+  .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+  .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: left; width: 20em;}
+  
+  .db_tabs_table{
+  	font-size:70%;
+  	border:0px;
+  	padding:0px;
+  	width:400px;
+  	border-spacing:0px;
+  }
+  .tab_table_title{
+  	width:70px;
+  }
+  
+  .tab_table_delemeter{
+  	width:10px;
+  }
+  
+  .tab_table_inputarea{
+  	width:300px;
+  }
+  .tab_table_buttons{
+  	text-align:right;
+  }
+  
+</style>
+
+
+<script>
+  $(function() {
+	  //가로 텝 등록
+    $( "#dbconnect_tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+    $( "#dbconnect_tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+    
+    //버튼 등록
+    $("input[type=button]").button().click(function(event){
+    	console.log(this.id);
+    	dialog_message_onclick(this.id);
+    })
+  });
+  </script>
+
+
+</head>
+<body>
+
+	<form style="width:100%">
+		<div id="dbconnect_tabs">
+			<ul style="width:150px">
+				<li><a href="#dbconnect_tab_oracle">Oracle</a></li>
+				<li><a href="#dbconnect_tab_postgis">PostgreGIS</a></li>
+				<li><a href="#dbconnect_tab_geoserver">GeoServer</a></li>
+			</ul>
+			
+			<!-- 오라클 탭 -->
+			<div id="dbconnect_tab_oracle">
+			<table class="db_tabs_table">
+				<tr>
+					<td class = "tab_table_title">호스트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_host name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">포트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_port" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">SID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_sid" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">서비스</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_service" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">ID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_id" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">패스워드</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="password"  id="dbconnect_tab_oracle_pass" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3 class="tab_table_buttons">
+						<label>Oracle</label>
+						<input type="button" id="dbconnect_tab_oracle_test" value="연결 테스트"  title="연결 테스트">
+						<input type="button" id="dbconnect_tab_oracle_connect" value="입력" title="입력">
+					</td>
+				</tr>
+			</table>
+			</div>
+			
+			
+			<!-- PostGIS -->
+			<div id="dbconnect_tab_postgis">
+			<table class="db_tabs_table">
+				<tr>
+					<td class = "tab_table_title">호스트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_postgis_host name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">포트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_postgis_port" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">SID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_postgis_sid" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">서비스</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_postgis_service" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">ID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_postgis_id" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">패스워드</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="password"  id="dbconnect_tab_postgis_pass" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3 class="tab_table_buttons">
+						<label>PostGIS</label>
+						<input type="button" id="dbconnect_tab_postgis_test" value="연결 테스트"  title="연결 테스트">
+						<input type="button" id="dbconnect_tab_postgis_connect" value="입력" title="입력">
+					</td>
+				</tr>
+			</table>
+			</div>
+			
+			
+			
+			
+			<!-- GeoServer -->
+			<div id="dbconnect_tab_geoserver">
+			<table class="db_tabs_table">
+				<tr>
+					<td class = "tab_table_title">호스트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_geoserver_host name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">포트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_geoserver_port" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">SID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_geoserver_sid" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">서비스</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_geoserver_service" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">ID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_geoserver_id" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">패스워드</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="password"  id="dbconnect_tab_geoserver_pass" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3 class="tab_table_buttons">
+						<label>GeoServer</label>
+						<input type="button" id="dbconnect_tab_geoserver_test" value="연결 테스트"  title="연결 테스트">
+						<input type="button" id="dbconnect_tab_geoserver_connect" value="입력" title="입력">
+					</td>
+				</tr>
+			</table>
+			</div>
+		</div>	
+	</form>
+
+</body>
+</html>

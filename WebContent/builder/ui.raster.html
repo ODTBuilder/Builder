@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<!-- jQuery 세팅 -->
+<script src='../includes/jQuery/jquery-1.11.1.js'></script>
+<!-- jQueryUI 세팅 -->
+<script src='../includes/jQueryUI/jquery-ui.js'></script>
+<link rel="stylesheet" type="text/css" href="../includes/jQueryUI/jquery-ui.css">
+<!-- Custom Setting  -->
+<script src='ui/basemap.js'></script>
+
+
+<script>
+	/* 
+	}); */
+/* 	$("#dlg_arrow input[type=button]").button().click(function(event){
+    	console.log(this.id);
+    	dialog_message_onclick(this.id);
+    }); */
+    $(function(){
+    	$("#dlg_arrow input[type=button]").button().click(function(event){
+    		alert("test!");
+    		makeEntity();
+    	});
+    });
+	
+</script>
+
+</head>
+<body>
+	<h2>테스트 다이얼로그 - GeoReferencing</h2>
+	<form>
+		<div id = "dlg_arrow">
+			<table>
+				<tr>
+					<td style="width:30px;height:30px;"></td>
+					<td style="width:30px;height:30px;"><input type='button'  id = 'btn_up' class='btn_georeference' value="UP"></td>
+					<td style="width:30px;height:30px;"></td>
+				</tr>
+				<tr>
+					<td style="width:30px;height:30px;"><input type='button'  id = 'btn_left' class='btn_georeference' value="LE"></td>
+					<td style="width:30px;height:30px;"></td>
+					<td style="width:30px;height:30px;"><input type='button'  id = 'btn_right' class='btn_georeference' value="RI"></td>
+				</tr>
+				<tr>
+					<td style="width:30px;height:30px;"></td>
+					<td style="width:30px;height:30px;"><input type='button'  id = 'btn_down' class='btn_georeference' value="DN"></td>
+					<td style="width:30px;height:30px;"></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	
+</body>
+</html>
