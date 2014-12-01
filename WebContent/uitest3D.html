@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>New Clear!, Alpha build</title>
+
+<link rel="stylesheet" type="text/css" href="Sample_ModifyObject.css">
+<!-- 오픈 레이어스 세팅 -->
+<script src="includes/OL2/OpenLayers.js"></script>
+<!-- GOOGLE MAP -->
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<!-- jQuery 세팅 -->
+<script src='includes/jQuery/jquery-1.11.1.js'></script>
+<!-- jQueryUI 세팅 -->
+<script src='includes/jQueryUI/jquery-ui.js'></script>
+<link rel="stylesheet" type="text/css" href="includes/jQueryUI/theme/start/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="includes/jQueryUI/theme/start/theme.css">
+<!-- <link rel="stylesheet" type="text/css" href="includes/jQueryUI/jquery-ui.css"> -->
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"> -->
+<link rel="shortcut icon" type="image/x-icon" href="http://localhost:8080/test/favicon.ico" />
+
+<!-- Custom Setting  -->
+<script src='builder/ui/basemap.js'></script>
+<script src='includes/proj4js/proj4js-combined.js'></script>
+
+<!-- NOTIFI plugin -->
+<script src='includes/notifi11/notifIt.js'></script>
+<link rel="stylesheet" type="text/css" href="includes/notifi11/css/notifIt.css">
+<link rel="shortcut icon" type="image/x-icon" href="http://175.116.181.22:8080/test/newclear.ico" />
+
+<!-- 웹어스 -->
+<script src="http://www.webglearth.com/v2/api.js"></script>
+
+
+<style>
+table.main_table {
+		border:0px;
+		border-spacing:0px;
+		margin:0px;
+		font-size: 80%;
+		padding: 0px;
+		width:1024px;
+		height:768px;
+		border-collapse: collapse;
+	}
+	table.main_table td:empty{
+	display:none;
+	}
+	table.main_table td{
+	padding:0px;
+	}
+	
+	.basemap-submenu {
+    position: absolute;
+    left: 100;
+    bottom: -500;
+  }
+  .ui-widget{
+  	font-size:100%;
+  }
+  
+  .ui-tooltip{
+  	padding:3px;
+  	border:2px;
+  	margin:1px;
+  	font-size:100%;
+  }
+  
+  .behind_codes{
+  font-size:100%;
+  }
+  
+  .dialog{
+  position:relative;
+  }
+  
+  .mnu_btneditset{
+  	position:absolute;
+  	}
+  	
+  	.mnu_btnmodifyset{
+  	position:absolute;
+  	}
+ 
+  	/* .mnu_btnedit_point{
+  	background:#0078ae url("builder/img/icon/line_p.png") repeat-x;
+  	font-size:30%;
+  	 } */
+  	 
+  	 #wrap{width: 400px;margin: 0 auto; }
+  	 
+  	 img.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+  
+</style>
+
+<script>
+
+$(function(){
+	//(벡터 입력) 점,선,면 버튼셋 세팅
+	$( "#mnu_btnedit" ).buttonset().hide();		//초기화시 숨기기
+	$("#mnu_editbtn_navi").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-arrow-4 "
+	      }
+	});
+	$("#mnu_editbtn_point").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-point"
+	      }
+	});
+	$("#mnu_editbtn_line").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-line"
+	      }
+	});
+	$("#mnu_editbtn_polygon").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-polygon"
+	      }
+	});
+	$( "#mnu_btnedit input[type=radio]" ).change(function(){
+		dialogmessagetest(this.id);
+	});
+	
+	
+	//수정하기 버튼셋 세팅
+	//$( "#mnu_btnmodify" ).buttonset().hide();		//초기화시 숨기기
+	$( "#mnu_btnmodify" ).buttonset();
+	$("#mnu_modifybtn_info").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-arrow-4 "
+	      }
+	});
+	$("#mnu_modifybtn_move").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-point"
+	      }
+	});
+	$("#mnu_modifybtn_delete").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-line"
+	      }
+	});
+	$("#mnu_modifybtn_change").button({
+		text:false,
+		icons: {
+	        primary: "ui-icon-custom-polygon"
+	      }
+	});
+	$( "#mnu_btnmodify input[type=radio]" ).change(function(){
+		dialogmessagetest(this.id);
+	});
+	
+	
+});
+
+//다이얼로그 미리 생성하기
+$(document).ready(function(){
+	
+	var mnu_list = [];
+	mnu_list.push("#mnu_basemap");
+	mnu_list.push("#mnu_import");
+	mnu_list.push("#mnu_projection");
+	mnu_list.push("#mnu_insert");
+	mnu_list.push("#mnu_attribute");
+	mnu_list.push("#mnu_modify");
+	mnu_list.push("#mnu_save");
+	mnu_list.push("#mnu_file");
+	mnu_list.push("#mnu_config");
+	
+	
+	for(var i in mnu_list){
+		/* 다이얼로그 1 */
+		$(mnu_list[i]).dialog({
+	        autoOpen: false,
+	        draggable: false,
+	        width: 'auto',
+	        modal: false
+	        /* buttons: {
+	            "Close": function () {
+	                $(this).dialog('destroy').remove()
+	            }
+	        } */
+	    });
+	}	
+});
+  </script>
+
+
+</head>
+<body>
+<table class = "main_table" >
+	<thead>
+		<tr height = 0>
+		<!-- 테이블 맞추는 셀 (의미 없음) -->
+			<td width=125px height=0></td>
+			<td width=30px height=0></td>
+			<td height=0></td>
+			<td width=250px height=0></td>
+		</tr>
+		<tr height=20>
+		<!-- 헤드부분 관련 데이터 세팅 -->
+			<td style="width:125px">Main Banner</td>
+			<td colspan=3>
+				<div id="ui_menu_toolbar" class="ui-widget-header ui-cornel-all" align="right" style="font-size:75%; width:100%">
+				<button id="ui_menu_basemap" title="기본지도">기본지도</button>
+				<button id="ui_menu_import" title="DB연결">DB연결</button>
+				<button id="ui_menu_projection" title="좌표변환">좌표변환</button>
+				<button id="ui_menu_insert" title="벡터입력">벡터입력</button>
+				<button id="ui_menu_attributes" title="속성보기">속성보기</button>
+				<button id="ui_menu_modify" title="수정하기">수정하기</button>
+				<button id="ui_menu_save" title="저장하기">저장하기</button>
+				<button id="ui_menu_file" title="파일입력">파일입력</button>
+				<button id="ui_menu_config" title="Config">환경설정</button>
+				</div>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+		<!-- 센터 부분 데이터 세팅 -->
+			<!-- <td width=155px colspan=1>
+					왼쪽 옵션바 세팅
+				<div id = 'ui_tab' style="width:155px; height:710px; padding:1px;">
+				<ul>
+					<li><a href="#geometryinfo" title="지형정보"><span class="ui-icon ui-icon-key"></span></a></li>
+					<li><a href="#attributesinfo" title="속성정보"><span class="ui-icon ui-icon-info"></span></a></li>
+					<li><a href="#layerinfo"  title="레이어"><span class="ui-icon ui-icon-copy"></span></a></li>
+				</ul>
+						<div id = "geometryinfo">
+							Geometry info display
+						</div>
+						<div id = "attributesinfo">
+							Attributes info display
+						</div>
+						<div id = "layerinfo">
+							Layer info dislay
+						</div>
+				</div>
+			</td>
+			<td colspan=3> -->
+			<td colspan=4>
+				<!-- 지도 영역 -->
+				<div id="canvasMap" class="ajaxCanvasMap" style="width:100%;  height:712px; background-image:url('builder/img/icon/outer-space-stars-1799082-1024x768.jpg');  background-color: #000000; "></div>
+			</td>
+			
+		</tr>
+	</tbody>
+	<tfoot>
+	<tr height=30>
+	<td align=right>command : </td>
+	<td  colspan = 2><input id="ui_input" style="width:100%"></td>
+	<td style="width:250px;" align="right"><span id="creadit" class="behind_codes" title="dev: RS Ryu(chief), TY Choi(sub), JH Kim(coder)">New Clear!, Alpha build</span></td>
+	</tr>
+	</tfoot>
+</table>
+
+
+
+
+<!-- 다이얼로그 영역 -->
+<div id="mnu_basemap" class="'dialog" title="기본지도" style="padding:3px;">
+	<iframe src="builder/ui.basemap.html" style="width:270px; height:130px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_import" class="'dialog" title="DB연결" style="padding:3px;">
+<iframe src="builder/ui.dbconnect.html" style="width:620px; height:230px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_projection" class="'dialog" title="좌표변환">
+<!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
+</div>
+<div id="mnu_insert" class="'dialog" title="벡터입력">
+<!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
+</div>
+<div id="mnu_attribute" class="'dialog" title="속성보기">
+<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_modify" class="'dialog" title="수정하기">
+<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_save" class="'dialog" title="저장하기">
+<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_file" class="'dialog" title="파일입력">
+<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+</div>
+<div id="mnu_config" class="'dialog" title="환경설정">
+<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+</div>
+
+<!-- 벡터입력 버튼 모음 (보이지 않음) -->
+<form>
+	  <div id="mnu_btnedit" class="mnu_btneditset">
+	    <input type="radio" id="mnu_editbtn_navi" name="radio" class="mnu_radiobtn"><label for="mnu_editbtn_navi" class="mnu_btnedit">지도 이동</label>
+	    <input type="radio" id="mnu_editbtn_point" name="radio" class="mnu_radiobtn"><label for="mnu_editbtn_point" class="mnu_btnedit_point">점형</label>
+	    <input type="radio" id="mnu_editbtn_line" name="radio" class="mnu_radiobtn"><label for="mnu_editbtn_line" class="mnu_btnedit_line">선형</label>
+	    <input type="radio" id="mnu_editbtn_polygon" name="radio" class="mnu_radiobtn"><label for="mnu_editbtn_polygon" class="mnu_btnedit_polygon">면형</label>
+	  </div>
+</form>
+
+
+<!-- 수정하기 버튼 모음 -->
+<form>
+	  <div id="mnu_btnmodify" class="mnu_btnmodifyset">
+	    <!-- <input type="radio" id="mnu_modifybtn_info" name="radio" class="mnu_radiobtn"><label for="mnu_modifybtn_info" class="mnu_btnmodify_info">속성보기</label> -->
+	    <input type="radio" id="mnu_modifybtn_move" name="radio" class="mnu_radiobtn"><label for="mnu_modifybtn_move" class="mnu_btnmodify_move">벡터이동</label>
+	    <input type="radio" id="mnu_modifybtn_delete" name="radio" class="mnu_radiobtn"><label for="mnu_modifybtn_delete" class="mnu_btnmodify_delete">벡터삭제</label>
+	    <input type="radio" id="mnu_modifybtn_change" name="radio" class="mnu_radiobtn"><label for="mnu_modifybtn_change" class="mnu_btnmodify_change">벡터수정</label>
+	  </div>
+</form>
+
+<script type = "text/javascript">
+var map;
+var pointLayer;
+var lineLayer;
+var polygonLayer;
+var TempLayer;
+
+var controls = [];
+
+
+	init();
+	function init(){
+		var ui_menu_buttons = [];
+		
+		setTabs();
+		addOLMap();
+		$("#mnu_btnedit" ).position({
+			my:"right top",
+			at:"right bottom",
+			of:"#ui_menu_toolbar"
+		});
+		
+		//메뉴이름,메뉴 아이콘 이름(css 참조) 순서		
+		add_basemap("ui_menu_basemap", ".ui_class_basemap","ui-icon-script", "#mnu_basemap", "ui_menu_basemap");
+		add_basemap("ui_menu_import", ".ui_menu_import","ui-icon-plusthick", "#mnu_import", "ui_menu_import");
+		add_basemap("ui_menu_projection", ".ui_menu_projection","ui-icon-transferthick-e-w", "#mnu_projection", "ui_menu_projection");
+		add_basemap("ui_menu_insert", ".ui_menu_insert","ui-icon-pencil", "#mnu_insert", "ui_menu_insert");
+		add_basemap("ui_menu_attributes", ".ui_menu_attributes","ui-icon ui-icon-info", "#mnu_attribute", "ui_menu_attributes");
+		add_basemap("ui_menu_modify", ".ui_menu_modify","ui-icon-wrench", "#mnu_modify", "ui_menu_modify");
+		add_basemap("ui_menu_save", ".ui_menu_save",".ui-icon-disk", "#mnu_save", "ui_menu_save");
+		add_basemap("ui_menu_file", ".ui_menu_file","ui-icon-folder-open", "#mnu_file", "ui_menu_file");
+		add_basemap("ui_menu_config", ".ui_menu_config","ui-icon-gear", "#mnu_config", "ui_menu_config");
+		
+		//지원되지 않는 기능 표시하기
+		$("#ui_input").click(function(evt){
+			not1("지금은 지원되지 않습니다.<br><b>Beta build</b>에 지원 예정");
+		});
+	}
+	
+	function addmenubuttons(ui_menu_buttons){
+		
+		var btns = [];
+		
+		for(var i in ui_menu_buttons){
+			console.log(ui_menu_buttons[i][0]);
+			dt_ui_add_menubutton(ui_menu_buttons[i][0], ui_menu_buttons[i][1]);
+			/* $(ui_menu_buttons[i][0]).button().click(
+				function(){
+					alert(ui_menu_buttons[i][0]);
+				}
+			); */
+		}
+	}
+	
+	function setTabs(){
+		var _height = window.innerHeight;
+		$("#ui_tab").tabs({collapsible: true});
+		
+	}
+	
+	function setTooltips(){
+		$("#ui_tab").tooltip();
+		$("#creadit").tooltip();
+	}
+	
+	function addOLMap(){
+		
+		OpenLayers.ProxyHost = "proxy.cgi?url=";
+		//프로젝션 설정
+		var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+		var toProjection   = new OpenLayers.Projection("EPSG:900913");
+		
+		
+		map = new WE.map('canvasMap');
+        WE.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        //WE.tileLayer('http://onetile1.map.naver.net/get/95/0/0/{z}/{x}/{y}/bl_vc_bg/ol_vc_an').addTo(map);
+        //http://onetile1.map.naver.net/get/95/0/0/11/1710/1446/bl_vc_bg/ol_vc_an
+		/* 
+		map = new OpenLayers.Map('canvasMap',
+				{
+					projection: toProjection,//바꿀좌표체계정의
+					displayProjection: fromProjection,
+					zoom: 18,
+				}
+		);
+		
+		//add Google Map
+		 var google = new OpenLayers.Layer.Google(
+					"Google Streets",
+					{numZoomLevels: 20}
+					);
+		map.addLayer(google);
+		
+
+		//WMS Layer
+		var dblayer = new OpenLayers.Layer.WMS(
+			"A001",
+			"http://localhost:8090/geoserver/wms",
+			{
+				layers: "A001",
+				transparent: true,	
+				format:'image/png',
+				srs: 'EPSG:5186'
+			},
+			{
+				isBaseLayer: false
+			});
+			
+		map.addLayer(dblayer);
+		
+		//set center position
+		 var bounds = new OpenLayers.Bounds(
+				14242882.317416, 4484570.60066,
+				14243238.227328, 4484764.6790522
+				);
+		 
+		//set Layer
+		var pointLayer = new OpenLayers.Layer.Vector("USER_POINT");
+		map.addLayer(pointLayer);	
+		
+		//add Controls
+		var ptLayer = map.getLayersByName("USER_POINT");
+		
+		
+		var pointctrl = new OpenLayers.Control.DrawFeature(
+				ptLayer[0],OpenLayers.Handler.Point,
+				{
+					title:"point Feature",
+					displayClass:"olControlDrawFeaturePoint"
+				}
+		);
+		
+		controls.push(pointctrl);
+		
+		map.addControl(pointctrl);
+		
+		
+		map.zoomToExtent(bounds); */
+		ol_AllControlsDown(true,true,true,true);
+	}
+	
+	function ol_AllControlsDown(_isNavigate, _isZoom, _isArgparser, _isAttributions){
+		var mapcontrols = map.controls;
+		for(var i in mapcontrols){
+			if(i == 0){
+				if(_isNavigate == false){
+					//네비게이션 기능 끄기
+					console.warn("navigate");
+					mapcontrols[i].deactivate();
+				}
+			}
+			else if(i == 1){
+				if(_isZoom == false){
+					//??? 기능 끄기
+					console.warn("_isZoom");
+					mapcontrols[i].deactivate();
+				}
+			}
+			else if((i == 2)){
+				if(_isArgparser == false){
+					//_isArgparser 기능 끄기
+					console.warn("_isArgparser");
+					mapcontrols[i].deactivate();
+				}
+			}
+			else if((i == 3)){
+				if(_isAttributions == false){
+					//??? 기능 끄기
+					console.warn("_isAttributions");
+					mapcontrols[i].deactivate();
+				}
+			}
+			else {
+				//다끄기
+				console.log(i);
+				mapcontrols[i].deactivate();
+			}
+		}
+		
+	}
+</script>
+</body>
+</html>
