@@ -420,13 +420,17 @@ window.onresize = function(event){
 	<!-- <iframe src="builder/ui.attribute.html" style="width:500px; height:250px; border:0px; align:middle;"></iframe> -->
 </div>
 <div id="mnu_modify" class="'dialog" title="수정하기">
-<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+<!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
 </div>
 <div id="mnu_save" class="'dialog" title="저장하기">
-<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+	<form action="FileUpload.jsp" name="fileForm" enctype="multiple/form-data" mathod="POST">
+		<input type="file" name="uploadFile" id="uploadFile">
+		<input type="submit" value="업로드">
+	</form>
+<!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
 </div>
 <div id="mnu_file" class="'dialog" title="파일입력">
-<iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe>
+<!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
 </div>
 <div id="mnu_config" class="'dialog" title="환경설정">
 <!-- <iframe src="builder/ui.dbconnect.html" style="width:290px; height:150px; border:0px; align:middle;"></iframe> -->
@@ -457,7 +461,7 @@ window.onresize = function(event){
 
 <!-- 레스터 입력 버튼 모음 -->
 <form>
-	  <div id="mnu_btnraster" class="mnu_btnrasterset">
+	  <div id="mnu_btnraster" class="mnu_btnrasterset">	  	
 	    <input type="radio" id="mnu_rasterbtn_make" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_make" class="mnu_btnraster_make">레스터생성</label>
 	    <input type="radio" id="mnu_rasterbtn_move" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_move" class="mnu_btnraster_move">레스터이동</label>
 	    <input type="radio" id="mnu_rasterbtn_change" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_change" class="mnu_btnraster_change">레스터수정</label>
