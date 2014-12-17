@@ -260,7 +260,7 @@ function mnu_dialog_func(ui_func){
 	case "#mnu_attribute":
 		
 		$(ui_func).dialog('open');
-		attribute_test();
+		dbshow();
 		break;
 	case "#mnu_modify":
 		hideAllButtonSet("#mnu_btnmodify");
@@ -276,19 +276,55 @@ function mnu_dialog_func(ui_func){
 		$("#mnu_modifybtn_move").prop('checked', true).button("refresh");
 		break;
 	case "#mnu_save":
-		
+		console.log("File Upload");
+		$(ui_func).dialog('open');
 		break;
 	case "#mnu_file":
-		modifyRaster();
+		//파일 업로드
 		break;
 	case "#mnu_config":
 		//다이얼로그 오픈
-		//$(ui_func).dialog('open');
+		
+		
+		$(ui_func).dialog('open');
 		
 		break;
 	}
 }
 
+
+
+
+function dbshow(){
+	notify("info", "데이터베이스 연결 시도중.");
+	var mainpage = location.host;
+	console.log(mainpage);
+	console.log(location.pathname);
+	var param = makeDatabaseParameter("localhost", "5432", "tester", "postgres", "postgres", "testdb", "the_geom");
+	requestCORS("","", param);
+}
+
+
+//작성자 : 유승범 (14-12-16)
+//데이터베이스 파라미터를 만든다.
+//_host : 서버 IP
+//_port : 데이터베이스포트
+//_account : 데이터베이스 계정 이름
+//_id : 데이터베이스 ID
+//_pass : 데이터베이스 비밀번호
+//_tname : 접속할 데이터베이스 테이블
+//_geom : 지오메트리 필드
+function makeDatabaseParameter(_host, _port, _account, _id, _pass, _tname, _geom){
+	var param = [];
+	param.host = _host;
+	param.port = _port;
+	param.account = _account;
+	param.id = _id;
+	param.pass = _pass;
+	param.tname = _tname;
+	param.geom = _geom;
+	return param;
+}
 
 //레스터 슬라이더에 관련된 함수
 function callbackSlideRaster(_id, _ui){
@@ -369,15 +405,20 @@ function attribute_test(){
 	var attr_schema = [attr_A001_schema, attr_B001_schema, attr_D001_schema, attr_H001_schema]; 
 	var attr_datas = [attr_A001_data, attr_B001_data, attr_D001_data, attr_H001_data];
 	
-	var out = makeTree(attr_layers, attr_schema);
+	//layer -> ["A","B","C"];
+	//schema = [["AS1","AS2",....],["BS1","BS2",....],["A1","CS2",....]];
+	
+	/*var out = makeTree(attr_layers, attr_schema);
 	console.log(out);
 	$("#attr_tree").html(out);
 	$("#attr_tree").jstree().click(function(){
 		//alert("clicked");
-	});
+	});*/
 	
 	//make grid	
 	var data = [];
+	console.log(attr_schema);
+	console.log(attr_datas);
 	
 	data = makeGridData(1, attr_schema, attr_datas);
 	
@@ -418,6 +459,8 @@ function makeGridData(_index, _schema, _datas){
 	for(var j in _datas){
 		data.push(_datas[_index][j]);
 	}
+	
+	console.log(data);
 	
 	
 	return data;

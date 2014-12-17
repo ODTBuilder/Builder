@@ -167,7 +167,7 @@ function removeControlByDisplayClass(_displayclass){
 
 
 //투명도 조절 기능
-function setOpacityImages(_value){
+function setOpacityRaster(_value){
 	var imgVecLayer = getLayerByNameInMap("IMAGE_VECTOR_LAYER", false);
 	if(imgVecLayer == null){
 		//벡터가 선언되어 있지 않아 컨트롤을 등록할 필요가 없음
