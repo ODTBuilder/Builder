@@ -1,4 +1,4 @@
-OpenGeoDT / Builder
+OpenGDS / Builder (내부 : OpenGeoDT / Builder)
 =======
 
 이 프로젝트는 국토공간정보연구사업 중, [공간정보 SW 활용을 위한 오픈소스 가공기술 개발]과제를 수행하기 위하여 제작되고 있습니다.
