@@ -52,7 +52,7 @@
 }
 
 .ui-front {
-	z-index: 9500;
+	z-index: 100;
 }
 
 
@@ -128,7 +128,6 @@
 	vertical-align: middle;
 	text-align: center;
 	overflow: visible; /* removes extra width in IE */
-	z-index:9900;
 }
 .ui-button,
 .ui-button:link,
@@ -599,7 +598,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-selectable-helper {
 	position: absolute;
-	z-index: 9600;
+	z-index: 100;
 	border: 1px dotted black;
 }
 .ui-selectmenu-menu {
@@ -657,7 +656,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-slider .ui-slider-handle {
 	position: absolute;
-	z-index: 9700;
+	z-index: 2;
 	width: 1.2em;
 	height: 1.2em;
 	cursor: default;
@@ -666,7 +665,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-slider .ui-slider-range {
 	position: absolute;
-	z-index: 9800;
+	z-index: 1;
 	font-size: .7em;
 	display: block;
 	border: 0;

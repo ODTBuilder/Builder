@@ -70,7 +70,7 @@ function add_basemap(ui_name, ui_class, ui_image, ui_subdlg, ui_func){
 		$(function() {
 		    $( ui_id )
 		      .button({
-		    	  text:false,
+		    	  text:true,
 		    	  icons:{primary: ui_image},
 		    	  })
 		      .click(function() {
@@ -85,7 +85,7 @@ function add_basemap(ui_name, ui_class, ui_image, ui_subdlg, ui_func){
 		$(function() {
 		    $( ui_id )
 		      .button({
-		    	  text:false,
+		    	  text:true,
 		    	  icons:{primary: ui_image}
 		    	  })
 		      .click(function() {
@@ -102,11 +102,16 @@ function add_basemap(ui_name, ui_class, ui_image, ui_subdlg, ui_func){
 // PARAM : ui_btnID (전송한 버튼 ID) 
 function dialog_message_onclick(ui_btnID){  
 	switch(ui_btnID){
+	
+	//기본지도 입력 부분
 	case "basemap_google":
-		alert(ui_btnID + " 입니다!");
+		changeBaseLayer("google");
 	break;	 
-	case "":
+	case "basemap_osm":
+		changeBaseLayer("openstreetmap");
 	break;
+	
+	
 	  //레스터 레이어 입력 부분
 	case "mnu_rasterbtn_make" :
 		  notify("info","레스터 이미지 생성");
@@ -175,36 +180,158 @@ function dialog_message_onclick(ui_btnID){
 		ol_AllControlsDown(true,true,true,true);
 		moveGroups();
 	break;
+	
+	//그리기 UI 관련 버튼 세팅
+	case "mnu_btndraw_2D":
+		notify("","2D 버튼 선택");
+		$(".mnu_btndraw_3Dset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_2D_editset").hide();		//편집셋은 숨김.
+		$(".mnu_btndraw_2D_addset").hide();		//입력셋은 숨김.
+		var radio_btn = $( "#mnu_btndraw_2Dset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_2Dset" ).position({
+			my:"center top",
+			at:"left bottom",
+			of:"#mnu_btndraw"
+		});
+		break;
+	case "mnu_btndraw_2D_add":
+		notify("","2D - 입력 선택");
+		$(".mnu_btndraw_2D_editset").hide();		//편집셋은 숨김.
+		$(".mnu_btndraw_3D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_3D_editset").hide();		//편집셋은 숨김.
+		var radio_btn = $( "#mnu_btndraw_2D_addset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_2D_addset" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#mnu_btndraw_2Dset"
+		});
+		break;
+	case "mnu_btndraw_2D_edit":
+		notify("","2D - 입력 선택");
+		$(".mnu_btndraw_2D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_3D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_3D_editset").hide();		//편집셋은 숨김.
+		var radio_btn = $( "#mnu_btndraw_2D_editset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_2D_editset" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#mnu_btndraw_2Dset"
+		});
+		break;
+	//2D 수행 버튼 모음
+	case "mnu_btndraw_2D_add_point":
+		notify("success","2D - 입력 - 점 선택");
+	break;
+	case "mnu_btndraw_2D_add_line":
+		notify("success","2D - 입력 - 선 선택");
+	break;
+	case "mnu_btndraw_2D_add_polygon":
+		notify("success","2D - 입력 - 면 선택");
+	break;
+	case "mnu_btndraw_2D_add_holepolygon":
+		notify("success","2D - 입력 - 홀 선택");
+	break;	
+	case "mnu_btndraw_2D_edit_move":
+		notify("success","2D - 수정 - 이동 선택");
+	break;
+	case "mnu_btndraw_2D_edit_modify":
+		notify("success","2D - 수정 - 편집 선택");
+	break;
+	case "mnu_btndraw_2D_delete":
+		notify("success","2D - 삭제 선택");
+	break;
+	
+	
+	//그리기 UI 관련 버튼 세팅
+	case "mnu_btndraw_3D":
+		notify("","3D 버튼 선택");
+		
+		$(".mnu_btndraw_2Dset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_3D_editset").hide();		//편집셋은 숨김.
+		$(".mnu_btndraw_3D_addset").hide();		//입력셋은 숨김.
+		
+		var radio_btn = $( "#mnu_btndraw_3Dset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_3Dset" ).position({
+			my:"center top",
+			at:"right bottom",
+			of:"#mnu_btndraw"
+		});
+		break;
+	case "mnu_btndraw_3D_add":
+		notify("","3D - 입력 선택");
+		
+		$(".mnu_btndraw_3D_editset").hide();		//편집셋은 숨김.
+		$(".mnu_btndraw_2D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_2D_editset").hide();		//편집셋은 숨김.
+		
+		var radio_btn = $( "#mnu_btndraw_3D_addset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_3D_addset" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#mnu_btndraw_3Dset"
+		});
+		break;
+	case "mnu_btndraw_3D_edit":
+		notify("","3D - 입력 선택");
+		
+		$(".mnu_btndraw_3D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_2D_addset").hide();		//입력셋은 숨김.
+		$(".mnu_btndraw_2D_editset").hide();		//편집셋은 숨김.
+		
+		var radio_btn = $( "#mnu_btndraw_3D_editset" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndraw_3D_editset" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#mnu_btndraw_3Dset"
+		});
+		break;
+	//3D 수행 버튼 모음
+	case "mnu_btndraw_3D_add_point":
+		notify("success","3D - 입력 - 점 선택");
+	break;
+	case "mnu_btndraw_3D_add_line":
+		notify("success","3D - 입력 - 선 선택");
+	break;
+	case "mnu_btndraw_3D_add_polygon":
+		notify("success","3D - 입력 - 면 선택");
+	break;
+	case "mnu_btndraw_3D_add_holepolygon":
+		notify("success","3D - 입력 - 홀 선택");
+	break;
+	case "mnu_btndraw_3D_add_extrude":
+		notify("success","3D - 입력 - 돌출 선택");
+	break;	
+	case "mnu_btndraw_3D_edit_move":
+		notify("success","3D - 수정 - 이동 선택");
+	break;
+	case "mnu_btndraw_3D_edit_modify":
+		notify("success","3D - 수정 - 편집 선택");
+	break;
+	case "mnu_btndraw_3D_delete":
+		notify("success","3D - 삭제 선택");
+	break;
+	
+		
+		
+		
 	default:
 		alert(ui_btnID);
 	break;
 	}
 }
 
-
-
-/*function basemap_func(ui_func){
-	switch(ui_func){
-	case "ui_menu_basemap":
-		break;
-	case "ui_menu_import":
-		break;
-	case "ui_menu_projection":
-		break;
-	case "ui_menu_insert":
-		break;
-	case "ui_menu_attributes":
-		break;
-	case "ui_menu_modify":
-		break;
-	case "ui_menu_save":
-		break;
-	case "ui_menu_file":
-		break;
-	case "ui_menu_config":
-		break;
-	}
-}*/
 
 
 // TODO 상단 메뉴바 버튼 모음
@@ -218,34 +345,39 @@ function mnu_dialog_func(ui_func){
 		
 		$(ui_func).dialog('open');
 		break;
-	case "#mnu_import":
-		$(ui_func).dialog('open');
+	case "#mnu_database":
+		hideAllButtonSet("#mnu_btndatabase");
+		var radio_btn = $( "#mnu_btndatabase" );	
+		radio_btn.toggle("highlight", {}, 200);		
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btndatabase" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#ui_menu_database"
+		});
+		
 		break;
 	case "#mnu_projection":
 		//not1("프로젝션 기능을 제공합니다.");
 		notify('warning', "프로젝션 기능을 제공합니다.");
 		break;
-	case "#mnu_insert":
+	case "#mnu_draw":
 		//벡터 그리기 버튼
-		hideAllButtonSet("#mnu_btnedit");
-		var radio_btn = $( "#mnu_btnedit" );	
-		radio_btn.toggle("highlight", {}, 200);
-		
+		hideAllButtonSet("#mnu_btndraw");
+		var radio_btn = $( "#mnu_btndraw" );	
 		//버튼을 메뉴로 이동시키기
-		$("#mnu_btnedit" ).position({
+		$("#mnu_btndraw" ).position({
 			my:"center top",
 			at:"center bottom",
-			of:"#ui_menu_insert"
-		});
+			of:"#ui_menu_draw"
+		});		
+		radio_btn.toggle("highlight", {}, 200);
 		//초기 (이동버튼)으로 변경하는 루틴
-		$("#mnu_editbtn_navi").prop('checked', true).button("refresh");
 		break;
 	case "#mnu_raster":
 		//벡터 그리기 버튼
 		hideAllButtonSet("#mnu_btnraster");			//다른 버튼을 전부 숨기기
 		var radio_btn = $( "#mnu_btnraster" );
-		
-		
 		radio_btn.toggle("highlight", {}, 200);
 		
 		//버튼을 메뉴로 이동시키기
@@ -258,11 +390,21 @@ function mnu_dialog_func(ui_func){
 		$("#mnu_rasterbtn_make").prop('checked', true).button("refresh");
 		break;		
 	case "#mnu_attribute":
+		hideAllButtonSet("#mnu_btnattribute");			//다른 버튼을 전부 숨기기
+		var radio_btn = $( "#mnu_btnattribute" );
+		radio_btn.toggle("highlight", {}, 200);
 		
-		$(ui_func).dialog('open');
-		dbshow();
+		//버튼을 메뉴로 이동시키기
+		$("#mnu_btnattribute" ).position({
+			my:"center top",
+			at:"center bottom",
+			of:"#ui_menu_attributes"
+		});
+		
+		
+		//dbshow();
 		break;
-	case "#mnu_modify":
+	/*case "#mnu_modify":
 		hideAllButtonSet("#mnu_btnmodify");
 		var radio_btn = $( "#mnu_btnmodify" );
 		radio_btn.toggle("highlight", {}, 200);
@@ -274,7 +416,7 @@ function mnu_dialog_func(ui_func){
 			of:"#ui_menu_modify"
 		});
 		$("#mnu_modifybtn_move").prop('checked', true).button("refresh");
-		break;
+		break;*/
 	case "#mnu_save":
 		console.log("File Upload");
 		$(ui_func).dialog('open');
@@ -285,7 +427,7 @@ function mnu_dialog_func(ui_func){
 	case "#mnu_config":
 		//다이얼로그 오픈
 		
-		
+		console.log(map);
 		$(ui_func).dialog('open');
 		
 		break;
@@ -329,7 +471,7 @@ function makeDatabaseParameter(_host, _port, _account, _id, _pass, _tname, _geom
 //레스터 슬라이더에 관련된 함수
 function callbackSlideRaster(_id, _ui){
 	var value = _ui.value;
-	var isCreated = setOpacityImages(value);
+	var isCreated = setOpacityRaster(value);
 	if(isCreated == false){
 		notify("error","투명도를 조절할 수 없습니다.");
 	}
@@ -337,16 +479,8 @@ function callbackSlideRaster(_id, _ui){
 
 
 function hideAllButtonSet(_exceptid){
-	var buttonset_id = [];
+	$(".mnu_btn").hide();
 	
-	buttonset_id.push("#mnu_btnedit");
-	buttonset_id.push("#mnu_btnmodify");
-	buttonset_id.push("#mnu_btnraster");
-	
-	for(var i in buttonset_id){
-		if( _exceptid != buttonset_id[i])
-		$(buttonset_id[i]).hide();	
-	}
 }
 
 function attribute_test(){
