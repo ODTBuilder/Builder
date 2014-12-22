@@ -1,4 +1,4 @@
-OpenGDS / Builder 
+OpenGDS / Builder (공간자료 편집도구)
 =======
 
 (내부 : OpenGeoDT / Builder)
