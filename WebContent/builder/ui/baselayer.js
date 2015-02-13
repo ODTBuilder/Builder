@@ -6,7 +6,8 @@ function changeBaseLayer(_type){
 	var zoom = map.zoom;
 	console.log(zoom);
 	if(isSameLayerType(map.baseLayer, _type)){
-		notify("info","현재 선택된 맵이 Google Map 입니다.");
+		//notify("info","현재 선택된 맵이 Google Map 입니다.");
+		notify("info","이미 선택되어 있는 Map 입니다.");
 	}
 	else{
 		//전체를 돌면서 미리 생성된 레이어가 있는지 확인함.
@@ -39,14 +40,22 @@ function changeBaseLayer(_type){
 	}
 }
 
-function setLayerType(_type){
+function setLayerType(_name){
 	var resultLayer = null;
-	switch(_type){
-	case "google":
+	switch(_name){
+	case "google":	
 		resultLayer = new OpenLayers.Layer.Google("Google Streets",{numZoomLevel : 19});
 		break;
 	case "openstreetmap":
 		resultLayer = new OpenLayers.Layer.OSM();
+		break;
+	case "daum":
+		resultLayer = new OpenLayers.Layer.Daum("Daum Map",{numZoomLevel : 14});
+		map.setCenter([198032, 451872], 14);
+		break;
+	case "naver":
+		resultLayer = new OpenLayers.Layer.Naver("Naver Map", {numZoomLevel : 14});
+		map.setCenter([953920.3, 1951999.6], 14);
 		break;
 	default:
 		//내용이 없음.
@@ -68,6 +77,16 @@ function isSameLayerType(_layer, _type){
 		break;
 	case "openstreetmap":
 		if(_layer instanceof OpenLayers.Layer.OSM){
+			result = true;
+		}
+		break;
+	case "daum":
+		if(_layer instanceof OpenLayers.Layer.Daum){
+			result = true;
+		}
+		break;
+	case "naver":
+		if(_layer instanceof OpenLayers.Layer.Naver){
 			result = true;
 		}
 		break;

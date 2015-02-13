@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <title>GeoDT™ for web (가제), Alpha build</title>
 
+<!-- 메뉴 분리 -->
+<script src='builder/define.menu.js'></script>
+<script src='builder/define.msg.js'></script>
+
 <!-- <link rel="stylesheet" type="text/css" href="Sample_ModifyObject.css"> -->
 <!-- 오픈 레이어스 세팅 -->
 <script src="includes/OL2/OpenLayers.js"></script>
@@ -33,15 +37,13 @@
 <script src='builder/ui/move.js'></script>
 <script src='builder/ui/draw.js'></script>
 
+
+
 <!-- 1차 시연버전, 파일업로드 및 기타기능 -->
 <script src='builder/ui/geodtjs.js'></script>
 <script src='stream.js'></script>
 <script src='shapefile.js'></script>
 <script src='dbf.js'></script>
-
-<!-- 메뉴 이름 세팅 -->
-<script src='builder/define.menu.js'></script>
-<script src='builder/define.msg.js'></script>
 <!-- 속성 출력부분 추가 -->
 <script src='builder/ui/connectDB.js'></script>
 <!-- 기본지도 변경 루틴 추가 -->
@@ -235,54 +237,16 @@ window.onresize = function(event){
 			<!-- <td style="width:125px; height:25px">Main Banner</td> -->
 			<td colspan=4>
 				<div id="ui_menu_toolbar" class="ui-widget-header ui-cornel-all" align="right" style="font-size:75%; width:100%">
-				<button id="ui_menu_basemap"></button>
-				<script>
-				$("#ui_menu_basemap").text(geodtjs.define.menu.basemap);
-				document.getElementById('ui_menu_basemap').title = geodtjs.define.menu.basemap;
-				</script>
-				<button id="ui_menu_database"></button>
-				<script>
-				$("#ui_menu_database").text(geodtjs.define.menu.conndb);
-				document.getElementById('ui_menu_database').title = geodtjs.define.menu.conndb;
-				</script>
-
-				<button id="ui_menu_layers"></button>
-				<script>
-				$("#ui_menu_layers").text(geodtjs.define.menu.layers);
-				document.getElementById('ui_menu_layers').title = geodtjs.define.menu.layers;
-				</script>
-
-				<button id="ui_menu_draw"></button>
-				<script>
-				$("#ui_menu_draw").text(geodtjs.define.menu.draw);
-				document.getElementById('ui_menu_draw').title = geodtjs.define.menu.draw;
-				</script>
-
-				<button id="ui_menu_raster"></button>
-				<script>
-				$("#ui_menu_raster").text(geodtjs.define.menu.raster);
-				document.getElementById('ui_menu_raster').title = geodtjs.define.menu.raster;
-				</script>
-
-				<button id="ui_menu_attributes"></button>
-				<script>
-				$("#ui_menu_attributes").text(geodtjs.define.menu.attributes);
-				document.getElementById('ui_menu_attributes').title = geodtjs.define.menu.attributes;
-				</script>
-
-				<button id="ui_menu_file"></button>
-				<script>
-				$("#ui_menu_file").text(geodtjs.define.menu.file);
-				document.getElementById('ui_menu_file').title = geodtjs.define.menu.file;
-				</script>
-
-				<button id="ui_menu_config" title="Config"></button>
-				<script>
-				$("#ui_menu_config").text(geodtjs.define.menu.config);
-				document.getElementById('ui_menu_config').title = geodtjs.define.menu.config;
-				</script>
-				
-				
+				<button id="ui_menu_basemap" title="기본지도">기본지도</button>
+				<button id="ui_menu_database" title="DB연결">DB연결</button>
+				<button id="ui_menu_layers" title="레이어설정">레이어설정</button>
+				<button id="ui_menu_draw" title="그리기">그리기</button>
+				<button id="ui_menu_raster" title="레스터입력">그림입력</button>
+				<button id="ui_menu_attributes" title="속성보기">속성보기</button>
+				<!-- <button id="ui_menu_modify" title="수정하기">수정하기</button> -->
+				<!-- <button id="ui_menu_save" title="저장하기">저장하기</button> -->
+				<button id="ui_menu_file" title="파일입력">파일입력</button>
+				<button id="ui_menu_config" title="Config">환경설정</button>
 				</div>
 			</td>
 		</tr>
@@ -295,14 +259,14 @@ window.onresize = function(event){
 			</td>
 		</tr>
 	</tbody>
-	<tfoot id="table_foot">
+	<!-- <tfoot id="table_foot">
 	<tr height=20>
 	<td>command :</td>
 	<td><input id="ui_input" style="width:100%; height:15px;"></td>
-	<!-- <td style="width:250px;" align="right"><span id="creadit" class="behind_codes" title="dev: RS Ryu(chief), TY Choi(sub), JH Kim(coder)">GeoDT™ for web, Alpha build</span></td> -->
+	<td style="width:250px;" align="right"><span id="creadit" class="behind_codes" title="dev: RS Ryu(chief), TY Choi(sub), JH Kim(coder)">GeoDT™ for web, Alpha build</span></td>
 	<td style="width:150px;" align="right"><button id="btn_comment" style="height:25px;">FID Comment</button></td>
 	</tr>
-	</tfoot>
+	</tfoot> -->
 </table>
 
 <!-- 테스트 버튼 눌렀을 때 이벤트 발생(Comment 테스트 부분) -->
@@ -315,10 +279,7 @@ window.onresize = function(event){
 
 
 <!-- 다이얼로그 영역 -->
-<div id="mnu_basemap" class="'dialog" style="padding:3px;">
-<script>
-document.getElementById("mnu_basemap").title = geodtjs.define.menu.basemap;
-</script>
+<div id="mnu_basemap" class="'dialog" title="기본지도" style="padding:3px;">
 
 <style>
 	.basemap_labels{
@@ -335,24 +296,14 @@ $(function() {
 </script>
 <form>
   <div id="radio">
-    <input type="radio" id="basemap_google" name="radio" class="radio_set"><label for="basemap_google" class="basemap_labels"></label></br>
-    <script>
-    $("label[for=basemap_google]").text(geodtjs.define.menu.basemap.sub.google);
-    </script>
-    <input type="radio" id="basemap_osm" name="radio" class="radio_set"><label for="basemap_osm" class="basemap_labels"></label></br>
-    <script>
-    $("label[for=basemap_osm]").text(geodtjs.define.menu.basemap.sub.osm);
-    </script>
-    <input type="radio" id="basemap_naver" name="radio" class="radio_set"><label for="basemap_naver" class="basemap_labels"></label></br>
-    <script>
-    $("label[for=basemap_naver]").text(geodtjs.define.menu.basemap.sub.naver);
-    </script>
-    <input type="radio" id="basemap_daum" name="radio" class="radio_set"><label for="basemap_daum" class="basemap_labels"></label>
-    <script>
-    $("label[for=basemap_daum]").text(geodtjs.define.menu.basemap.sub.daum);
-    </script>
+    <input type="radio" id="basemap_google" name="radio" class="radio_set"><label for="basemap_google" class="basemap_labels">Google Maps</label></br>
+    <input type="radio" id="basemap_osm" name="radio" class="radio_set"><label for="basemap_osm" class="basemap_labels">OpenStreetMap</label></br>
+    <input type="radio" id="basemap_naver" name="radio" class="radio_set"><label for="basemap_naver" class="basemap_labels">Naver</label></br>
+    <input type="radio" id="basemap_daum" name="radio" class="radio_set"><label for="basemap_daum" class="basemap_labels">Daum</label>
   </div>
 </form>
+	
+	
 	<!-- <iframe src="builder/ui.basemap.html" style="width:270px; height:130px; border:0px; align:middle;"></iframe> -->
 </div>
 
@@ -416,8 +367,66 @@ $(function() {
 	<form style="width:100%">
 		<div id="dbconnect_tabs">
 			<ul style="width:150px">
+				<li><a href="#dbconnect_tab_oracle">Oracle</a></li>
+				<li><a href="#dbconnect_tab_postgis">PostgreGIS</a></li>
+				<li><a href="#dbconnect_tab_geoserver">GeoServer</a></li>
+			</ul>
 			
-			<li><a href="#dbconnect_tab_postgis">PostgreGIS</a></li>
+			
+			<div id="dbconnect_tab_oracle">
+			<table class="db_tabs_table">
+				<tr>
+					<td class = "tab_table_title">호스트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_host name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">포트</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_port" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">SID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_sid" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">서비스</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_service" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">ID</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="text" id="dbconnect_tab_oracle_id" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td class = "tab_table_title">패스워드</td>
+					<td class = "tab_table_delemeter">:</td>
+					<td class = "tab_table_inputarea">
+						<input type="password"  id="dbconnect_tab_oracle_pass" name="" class="tab_table_inputarea">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3 class="tab_table_buttons">
+						<label>Oracle</label>
+						<input type="button" id="dbconnect_tab_oracle_test" value="연결 테스트"  title="연결 테스트">
+						<input type="button" id="dbconnect_tab_oracle_connect" value="입력" title="입력">
+					</td>
+				</tr>
+			</table>
+			</div>
+			
 			
 			
 			<div id="dbconnect_tab_postgis">
@@ -478,7 +487,7 @@ $(function() {
 			
 			
 			
-			<!-- <div id="dbconnect_tab_geoserver">
+			<div id="dbconnect_tab_geoserver">
 			<table class="db_tabs_table">
 				<tr>
 					<td class = "tab_table_title">호스트</td>
@@ -530,9 +539,7 @@ $(function() {
 					</td>
 				</tr>
 			</table>
-			</div> -->
-			
-			
+			</div>
 		</div>	
 	</form>
 </div>
@@ -595,27 +602,11 @@ $(function() {
 <!-- 레스터 입력 버튼 모음 -->
 <form>
 	  <div id="mnu_btnraster" class="mnu_btn mnu_btnrasterset">
-	    <input type="radio" id="mnu_rasterbtn_make" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_make" class="mnu_btnraster_make"></label>
-	    <script>
-    $("label[for=mnu_rasterbtn_make]").text(geodtjs.define.menu.raster.sub.make);
-    </script>
+	    <input type="radio" id="mnu_rasterbtn_make" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_make" class="mnu_btnraster_make">생성</label>
 	    <input type="radio" id="mnu_rasterbtn_move" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_move" class="mnu_btnraster_move">이동</label>
-	    <script>
-	    $("label[for=mnu_rasterbtn_move]").text(geodtjs.define.menu.raster.sub.move);
-    	</script>
 	    <input type="radio" id="mnu_rasterbtn_change" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_change" class="mnu_btnraster_change">수정</label>
-	    <script>
-	    $("label[for=mnu_rasterbtn_change]").text(geodtjs.define.menu.raster.sub.modify);
-    
-    </script>
 	    <input type="radio" id="mnu_rasterbtn_transparent" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_transparent" class="mnu_btnraster_transparent">투명</label>
-	    <script>
-	    $("label[for=mnu_rasterbtn_transparent]").text(geodtjs.define.menu.raster.sub.transparent);
-    	</script>
-	    <input type="radio" id="mnu_rasterbtn_delete" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_delete" class="mnu_btnraster_delete">삭제</label>
-	    <script>
-    	$("label[for=mnu_rasterbtn_delete]").text(geodtjs.define.menu.raster.sub.del);
-    	</script>	    
+	    <input type="radio" id="mnu_rasterbtn_delete" name="radio" class="mnu_radiobtn"><label for="mnu_rasterbtn_delete" class="mnu_btnraster_delete">삭제</label>	    
 	  </div>
 </form>
 
@@ -623,11 +614,7 @@ $(function() {
 <div id="mnu_rasterbtn_slider_name"  style="width:250px;height:15px;">
 <table style="width:250px;">
 	<tr>
-		<td id = 'mnu_descript'>
-		<script>
-    	$("td[id=mnu_descript]").text(geodtjs.define.menu.raster.sub.transparent.sub.opacity);
-    	</script>
-    	</td>
+		<td>투명도설정</td>
 		<td><div id="mnu_rasterbtn_slider" style="width:150px;height:15px;"></div></td>
 	</tr>
 </table>
@@ -636,18 +623,9 @@ $(function() {
 <!-- 데이터베이스 버튼 모음 -->
 <form>
 	  <div id="mnu_btndatabase" class="mnu_btn mnu_btndatabaseset">
-	    <input type="radio" id="mnu_databasebtn_add" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_add" class="mnu_databasebtn_add"></label>
-	    <script>
-    	$("label[for=mnu_databasebtn_add]").text(geodtjs.define.menu.conndb.sub.open);
-    	</script>	    
-	    <input type="radio" id="mnu_databasebtn_close" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_close" class="mnu_btndatabase_close"></label>
-	    <script>
-    	$("label[for=mnu_databasebtn_close]").text(geodtjs.define.menu.conndb.sub.close);
-    	</script>	    
-	    <input type="radio" id="mnu_databasebtn_save" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_save" class="mnu_btndatabase_save"></label>
-	    <script>
-    	$("label[for=mnu_databasebtn_save]").text(geodtjs.define.menu.conndb.sub.save);
-    	</script>
+	    <input type="radio" id="mnu_databasebtn_add" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_add" class="mnu_databasebtn_add">열기</label>
+	    <input type="radio" id="mnu_databasebtn_close" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_close" class="mnu_btndatabase_close">닫기</label>
+	    <input type="radio" id="mnu_databasebtn_save" name="radio" class="mnu_radiobtn"><label for="mnu_databasebtn_save" class="mnu_btndatabase_save">저장</label>	    
 	  </div>
 </form>
 
@@ -655,146 +633,67 @@ $(function() {
 <!-- 그리기 버튼 모음 -->
 <form>
 	  <div id="mnu_btndraw" class="mnu_btn mnu_btndrawset">
-	    <input type="radio" id="mnu_btndraw_2D" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D" class="mnu_btndraw_2D"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D]").text(geodtjs.define.menu.draw.sub.two);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_3D" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D" class="mnu_btndraw_2D"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D]").text(geodtjs.define.menu.draw.sub.three);
-    	</script>
+	    <input type="radio" id="mnu_btndraw_2D" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D" class="mnu_btndraw_2D">2D</label>
+	    <input type="radio" id="mnu_btndraw_3D" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D" class="mnu_btndraw_2D">3D</label>
 	  </div>
 </form>
 
 <!-- 2D 버튼 모음 (입력,변경,삭제) -->
 <form>
 	  <div id="mnu_btndraw_2Dset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_2Dset">
-	    <input type="radio" id="mnu_btndraw_2D_add" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add" class="mnu_btndraw_2D_add"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_add]").text(geodtjs.define.menu.draw.sub.two.sub.make);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_edit" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit" class="mnu_btndraw_2D_edit"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_edit]").text(geodtjs.define.menu.draw.sub.two.sub.modify);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_delete" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_delete" class="mnu_btndraw_2D_delete"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_delete]").text(geodtjs.define.menu.draw.sub.two.sub.del);
-    	</script>
+	    <input type="radio" id="mnu_btndraw_2D_add" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add" class="mnu_btndraw_2D_add">입력</label>
+	    <input type="radio" id="mnu_btndraw_2D_edit" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit" class="mnu_btndraw_2D_edit">변경</label>
+	    <input type="radio" id="mnu_btndraw_2D_delete" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_delete" class="mnu_btndraw_2D_delete">삭제</label>	    
 	  </div>
 </form>
 <!-- 2D 입력 버튼 모음 (점형, 선형, 면형) -->
 <form>
 	  <div id="mnu_btndraw_2D_addset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_2Dset mnu_btndraw_2D_addset">
-	    <input type="radio" id="mnu_btndraw_2D_add_point" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_point" class="mnu_btndraw_2D_add_point"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_add_point]").text(geodtjs.define.menu.draw.sub.two.sub.make.sub.point);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_add_line" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_line" class="mnu_btndraw_2D_add_line"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_add_line]").text(geodtjs.define.menu.draw.sub.two.sub.make.sub.line);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_add_polygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_polygon" class="mnu_btndraw_2D_add_polygon"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_add_polygon]").text(geodtjs.define.menu.draw.sub.two.sub.make.sub.polygon);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_add_holepolygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_holepolygon" class="mnu_btndraw_2D_add_holepolygon"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_add_holepolygon]").text(geodtjs.define.menu.draw.sub.two.sub.make.sub.hole);
-    	</script>
+	    <input type="radio" id="mnu_btndraw_2D_add_point" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_point" class="mnu_btndraw_2D_add_point">점</label>
+	    <input type="radio" id="mnu_btndraw_2D_add_line" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_line" class="mnu_btndraw_2D_add_line">선</label>
+	    <input type="radio" id="mnu_btndraw_2D_add_polygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_polygon" class="mnu_btndraw_2D_add_polygon">면</label>
+	    <input type="radio" id="mnu_btndraw_2D_add_holepolygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_add_holepolygon" class="mnu_btndraw_2D_add_holepolygon">홀</label>
 	  </div>
 </form>
 
 <!-- 2D 변경 버튼 모음 () -->
 <form>
 	  <div id="mnu_btndraw_2D_editset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_2Dset mnu_btndraw_2D_editset">
-	    <input type="radio" id="mnu_btndraw_2D_edit_move" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit_move" class="mnu_btndraw_2D_edit_move"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_edit_move]").text(geodtjs.define.menu.draw.sub.two.sub.modify.sub.move);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_2D_edit_modify" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit_modify" class="mnu_btndraw_2D_edit_modify"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_2D_edit_modify]").text(geodtjs.define.menu.draw.sub.two.sub.modify.sub.modify);
-    	</script>
+	    <input type="radio" id="mnu_btndraw_2D_edit_move" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit_move" class="mnu_btndraw_2D_edit_move">이동</label>
+	    <input type="radio" id="mnu_btndraw_2D_edit_modify" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_2D_edit_modify" class="mnu_btndraw_2D_edit_modify">수정</label>
 	  </div>
 </form>
-
-
-
 <!-- 3D 버튼 모음 (입력,변경,삭제) -->
 <form>
 	  <div id="mnu_btndraw_3Dset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_3Dset">
-	    <input type="radio" id="mnu_btndraw_3D_add" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add" class="mnu_btndraw_3D_add"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add]").text(geodtjs.define.menu.draw.sub.three.sub.make);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_3D_edit" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit" class="mnu_btndraw_3D_edit"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_edit]").text(geodtjs.define.menu.draw.sub.three.sub.modify);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_3D_delete" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_delete" class="mnu_btndraw_3D_delete"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_delete]").text(geodtjs.define.menu.draw.sub.three.sub.del);
-    	</script>	    
+	    <input type="radio" id="mnu_btndraw_3D_add" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add" class="mnu_btndraw_3D_add">입력</label>
+	    <input type="radio" id="mnu_btndraw_3D_edit" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit" class="mnu_btndraw_3D_edit">변경</label>
+	    <input type="radio" id="mnu_btndraw_3D_delete" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_delete" class="mnu_btndraw_3D_delete">삭제</label>	    
 	  </div>
 </form>
-
 <!-- 3D 버튼 모음 (점, 선, 면, 돌출) -->
 <form>
 	  <div id="mnu_btndraw_3D_addset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_3Dset mnu_btndraw_3D_addset">
-	    <input type="radio" id="mnu_btndraw_3D_add_point" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_point" class="mnu_btndraw_3D_add_point"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add_point]").text(geodtjs.define.menu.draw.sub.three.sub.make.sub.point);
-    	</script>	   
-	    <input type="radio" id="mnu_btndraw_3D_add_line" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_line" class="mnu_btndraw_3D_add_line"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add_line]").text(geodtjs.define.menu.draw.sub.three.sub.make.sub.line);
-    	</script>	   
-	    <input type="radio" id="mnu_btndraw_3D_add_polygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_polygon" class="mnu_btndraw_3D_add_polygon"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add_polygon]").text(geodtjs.define.menu.draw.sub.three.sub.make.sub.polygon);
-    	</script>	   	    
-	    <input type="radio" id="mnu_btndraw_3D_add_holepolygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_holepolygon" class="mnu_btndraw_3D_add_holepolygon"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add_holepolygon]").text(geodtjs.define.menu.draw.sub.three.sub.make.sub.hole);
-    	</script>	   
-	    <input type="radio" id="mnu_btndraw_3D_add_extrude" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_extrude" class="mnu_btndraw_3D_add_extrude"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_add_extrude]").text(geodtjs.define.menu.draw.sub.three.sub.make.sub.extrude);
-    	</script>	   
+	    <input type="radio" id="mnu_btndraw_3D_add_point" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_point" class="mnu_btndraw_3D_add_point">점</label>
+	    <input type="radio" id="mnu_btndraw_3D_add_line" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_line" class="mnu_btndraw_3D_add_line">선</label>
+	    <input type="radio" id="mnu_btndraw_3D_add_polygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_polygon" class="mnu_btndraw_3D_add_polygon">면</label>	    
+	    <input type="radio" id="mnu_btndraw_3D_add_holepolygon" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_holepolygon" class="mnu_btndraw_3D_add_holepolygon">홀</label>
+	    <input type="radio" id="mnu_btndraw_3D_add_extrude" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_add_extrude" class="mnu_btndraw_3D_add_extrude">돌출</label>
 	  </div>
 </form>
-
 <!-- 3D 버튼 모음 (이동, 수정) -->
 <form>
 	  <div id="mnu_btndraw_3D_editset" class="mnu_btn mnu_btndrawset mnu_btndrawset mnu_btndraw_3Dset mnu_btndraw_3D_editset">
-	    <input type="radio" id="mnu_btndraw_3D_edit_move" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit_move" class="mnu_btndraw_3D_edit_move"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_edit_move]").text(geodtjs.define.menu.draw.sub.three.sub.modify.sub.move);
-    	</script>
-	    <input type="radio" id="mnu_btndraw_3D_edit_modify" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit_modify" class="mnu_btndraw_3D_edit_modify"></label>
-	    <script>
-    	$("label[for=mnu_btndraw_3D_edit_modify]").text(geodtjs.define.menu.draw.sub.three.sub.modify.sub.modify);
-    	</script>
+	    <input type="radio" id="mnu_btndraw_3D_edit_move" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit_move" class="mnu_btndraw_3D_edit_move">입력</label>
+	    <input type="radio" id="mnu_btndraw_3D_edit_modify" name="radio" class="mnu_radiobtn"><label for="mnu_btndraw_3D_edit_modify" class="mnu_btndraw_3D_edit_modify">변경</label>
 	  </div>
 </form>
-
-
 <!-- 속성보기 모음 (선택, 보기, 저장) -->
 <form>
 	  <div id="mnu_btnattribute" class="mnu_btn mnu_btnattributeset mnu_btnattributeset" >
-	    <input type="radio" id="mnu_btnattribute_select" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_select" class="mnu_btnattribute_select"></label>
-	    <script>
-    	$("label[for=mnu_btnattribute_select]").text(geodtjs.define.menu.attributes.sub.select);
-    	</script>
-	    <input type="radio" id="mnu_btnattribute_view" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_view" class="mnu_btnattribute_view"></label>
-	    <script>
-    	$("label[for=mnu_btnattribute_view]").text(geodtjs.define.menu.attributes.sub.view);
-    	</script>
-	    <input type="radio" id="mnu_btnattribute_save" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_save" class="mnu_btnattribute_save"></label>
-	    <script>
-    	$("label[for=mnu_btnattribute_save]").text(geodtjs.define.menu.attributes.sub.save);
-    	</script>
+	    <input type="radio" id="mnu_btnattribute_select" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_select" class="mnu_btnattribute_select">선택</label>
+	    <input type="radio" id="mnu_btnattribute_view" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_view" class="mnu_btnattribute_view">보기</label>
+	    <input type="radio" id="mnu_btnattribute_save" name="radio" class="mnu_radiobtn"><label for="mnu_btnattribute_save" class="mnu_btnattribute_save">저장</label>
 	  </div>
 </form>
 
@@ -991,16 +890,18 @@ map_events.register("moveend", map, onMoveEnd); */
 		 
 		//set Layer
 		pointLayer = new OpenLayers.Layer.Vector("USER_POINT");
+		pointLayer.geometryType = "OpenLayers.Geometry.Point";
 		lineLayer = new OpenLayers.Layer.Vector("USER_LINE");
+		lineLayer.geometryType = "OpenLayers.Geometry.LineString";
 		polygonLayer = new OpenLayers.Layer.Vector("USER_POLYGON"/*, {renderers: renderer}*/);
+		polygonLayer.geometryType = "OpenLayers.Geometry.Polygon";
 		
-		vector_point_layer = new OpenLayers.Layer.Vector("VECTOR_POINT", {geometryType : OpenLayers.Geometry.Point});
-		vector_point_layer._type = "POINT";
-		vector_line_layer = new OpenLayers.Layer.Vector("VECTOR_LINE", {geometryType : OpenLayers.Geometry.LineString});
-		vector_line_layer._type = "LINESTRING";		
-		vector_poly_layer = new OpenLayers.Layer.Vector("VECTOR_POLYGON", {geometryType : OpenLayers.Geometry.Polygon});
-		vector_poly_layer._type = "POLYGON";
-		
+		vector_point_layer = new OpenLayers.Layer.Vector("VECTOR_POINT");
+		vector_point_layer.geometryType = "OpenLayers.Geometry.Point";
+		vector_line_layer = new OpenLayers.Layer.Vector("VECTOR_LINE");
+		vector_line_layer.geometryType = "OpenLayers.Geometry.LineString";
+		vector_poly_layer = new OpenLayers.Layer.Vector("VECTOR_POLYGON");
+		vector_poly_layer.geometryType = "OpenLayers.Geometry.Polygon";
 		
 		map.addLayer(pointLayer);	
 		map.addLayer(lineLayer);
@@ -1034,6 +935,8 @@ map_events.register("moveend", map, onMoveEnd); */
 	    //데이터베이스 레이어
 	    var newWMS = new OpenLayers.Layer.WMS("testWMS");
 	    geodtjs.map2d.map.addLayer(newWMS);
+        
+        
         
 	}
 	

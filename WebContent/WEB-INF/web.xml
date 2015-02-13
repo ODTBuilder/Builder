@@ -9,4 +9,11 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+    <context-param> 
+    <description>Location to store uploaded file</description> 
+    <param-name>file-upload</param-name> 
+    <param-value>
+    	D:\eGovFrameDev-3.1.1-32bit\workspace\test\WebContent\
+     </param-value> 
+</context-param>
 </web-app>

@@ -10013,6 +10013,7 @@ OpenLayers.Events = OpenLayers.Class({
      *     chain of listeners will stop getting called.
      */
     triggerEvent: function (type, evt) {
+    	
         var listeners = this.listeners[type];
 
         // fast path
@@ -27560,7 +27561,7 @@ OpenLayers.Layer = OpenLayers.Class({
      *     the tile by twice the gutter in each dimension.
      */
     imageSize: null,
-    
+        
   // OPTIONS
 
     /** 
@@ -27730,7 +27731,6 @@ OpenLayers.Layer = OpenLayers.Class({
     initialize: function(name, options) {
 
         this.metadata = {};
-        
         options = OpenLayers.Util.extend({}, options);
         // make sure we respect alwaysInRange if set on the prototype
         if (this.alwaysInRange != null) {
@@ -46374,6 +46374,20 @@ OpenLayers.Layer.Vector = OpenLayers.Class(OpenLayers.Layer, {
      * {Float} This specifies the ratio of the size of the visiblity of the Vector Layer features to the size of the map.
      */   
     ratio: 1,
+    
+    /** 
+     * APIProperty: _type
+     * {String} geometryType의 버그로 인하여 추가된 프로퍼티 (POINT, LINESTRING, POLYGON)
+     */   
+    _type : "",
+    
+    /** 
+     * APIProperty: features (변한 것들)
+     * {Array(OpenLayers.Fecture.Vector)} 변한 내용들에 대한 Array를 저장한다.
+     */
+    _addfeatures : [],
+    _modifyfeatures : null,
+    _deletefetures : null,
 
     /**
      * Constructor: OpenLayers.Layer.Vector
@@ -111267,7 +111281,6 @@ OpenLayers.Layer.Zoomify = OpenLayers.Class(OpenLayers.Layer.Grid, {
 
         // initilize the Zoomify pyramid for given size
         this.initializeZoomify(size);
-
         OpenLayers.Layer.Grid.prototype.initialize.apply(this, [
             name, url, size, {}, options
         ]);

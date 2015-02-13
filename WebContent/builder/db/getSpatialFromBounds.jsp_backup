@@ -1,0 +1,247 @@
+<!-- 범위 내 Feature 가져오는 서버 -->
+
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.io.*"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="org.json.JSONArray"%>
+<%@page import="java.sql.*"%>
+<%@page import="org.json.JSONObject"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%!
+public boolean checkBoundary(String type, String geo_data, JSONObject jsonObject){
+	//System.out.println("Test에 왔다!");
+	System.out.println("geo_data = " + geo_data);
+	
+	double map_left = jsonObject.getDouble("left");
+	double map_right = jsonObject.getDouble("right");
+	double map_top = jsonObject.getDouble("top");
+	double map_bottom = jsonObject.getDouble("bottom");
+	
+	boolean check_return = false;
+	
+	if(type.equals("tst_table")){
+		System.out.println("Polygon Table 이다!");
+		int start = geo_data.lastIndexOf("(");
+		int end = geo_data.lastIndexOf(")))");
+	
+		/* System.out.println("start = " + start);
+		System.out.println("end = " + end); */
+	
+		String test = geo_data.substring(start+1, end);
+		//System.out.println("test = " + test); 
+		
+		String[] split_data = test.split(",");
+		//System.out.println("split_data = " + split_data[0]);
+		
+		int count = split_data.length;
+		/* System.out.println("count = " + count); */
+		
+		/* ArrayList<String> geo_x = new ArrayList<String>();
+		ArrayList<String> geo_y = new ArrayList<String>(); */
+		
+		boolean check_geoX = false;
+		boolean check_geoY = false;
+		
+		for(int i=0 ; i<count-1 ; i++){
+			String[] point = split_data[i].split(" ");
+			
+			/* System.out.println("point[0] = " + point[0]); */
+			
+			double comp_x = Double.parseDouble(point[0]);
+			double comp_y = Double.parseDouble(point[1]);
+			
+			/* System.out.println("comp_x = " + comp_x);
+			System.out.println("comp_y = " + comp_y); */
+			
+			if(map_left <= comp_x && comp_x <= map_right){
+				if(map_bottom <= comp_y && comp_y <= map_top){
+					//System.out.println("true");
+					check_geoX = true;
+					check_geoY = true;
+				}
+				else{
+					System.out.println("check_geoY = false");
+					check_geoY = false;
+					check_return = false;
+				}
+			}
+			else{
+				System.out.println("check_geoX = false");
+				check_geoX = false;
+				check_return = false;
+			}
+		}
+		if(check_geoX == true && check_geoY == true){
+			check_return = true;
+			//return check_return;
+		}
+		return check_return;
+	}
+	
+	else{
+		//System.out.println("Point or Line Table이다");;
+		//return check_return;
+		
+		System.out.println("Point or Line Table 이다!");
+		int start = geo_data.lastIndexOf("(");
+		int end = geo_data.lastIndexOf(")");
+	
+		/* System.out.println("start = " + start);
+		System.out.println("end = " + end); */
+	
+		String test = geo_data.substring(start+1, end);
+		//System.out.println("test = " + test);
+		
+		String[] split_data = test.split(",");
+		System.out.println("split_data = " + split_data[0]);
+		
+		int count = split_data.length;
+		/* System.out.println("count = " + count); */
+		
+		/* ArrayList<String> geo_x = new ArrayList<String>();
+		ArrayList<String> geo_y = new ArrayList<String>(); */
+		
+		boolean check_geoX = false;
+		boolean check_geoY = false;
+		
+		for(int i=0 ; i<count ; i++){
+			String[] point = split_data[i].split(" ");
+			
+			/* System.out.println("point[0] = " + point[0]); */
+			
+			double comp_x = Double.parseDouble(point[0]);
+			double comp_y = Double.parseDouble(point[1]);
+			
+			/* System.out.println("comp_x = " + comp_x);
+			System.out.println("comp_y = " + comp_y); */
+			
+			if(map_left <= comp_x && comp_x <= map_right){
+				if(map_bottom <= comp_y && comp_y <= map_top){
+					//System.out.println("true");
+					check_geoX = true;
+					check_geoY = true;
+				}
+				else{
+					System.out.println("check_geoY = false");
+					check_geoY = false;
+					check_return = false;
+				}
+			}
+			else{
+				System.out.println("check_geoX = false");
+				check_geoX = false;
+				check_return = false;
+			}
+		}
+		if(check_geoX == true && check_geoY == true){
+			check_return = true;
+			//return check_return;
+		}
+		return check_return;
+	}
+}
+%>    
+
+<%
+String strId = request.getParameter("id");
+String strPass = request.getParameter("pass");
+String strHost = request.getParameter("host");
+String strPort = request.getParameter("port");
+String strAccount = request.getParameter("account");
+String strTableName = request.getParameter("tname");
+String strGeomField = request.getParameter("geom");
+
+ResultSet rs = null;				//데이터 저장소
+ResultSetMetaData rsmt = null;		//스키마 저장소
+Connection conn = null;				//커넥션
+PreparedStatement pstmt = null;		//프리스테이트먼트
+JSONArray aryobj = new JSONArray();	//결과값 저장소
+
+
+/* XHR로 보낸 데이터를 받기위한 변수들 선언 */
+StringBuffer sb = new StringBuffer();
+String json = null;
+String line = null;
+
+try{
+	Class.forName("org.postgresql.Driver");
+	String strConn = "jdbc:postgresql://" + strHost + ":" + strPort + "/" + strAccount;
+	conn = DriverManager.getConnection(strConn, strId, strPass);
+	
+	//System.out.println("strConn = " + strConn.toString());
+	
+	BufferedReader reader = request.getReader();
+	
+	while((line = reader.readLine()) != null){
+		sb.append(line);
+		//System.out.println("sb = " + sb.toString());
+	}
+	
+	//json = "{\"data\":" + sb.toString() + "}";
+	json = sb.toString();
+	//System.out.println("json = " + json);
+	
+	JSONObject jsonObject = new JSONObject(json);
+	//System.out.println("jsonObject = " + jsonObject);
+	
+	/* --------------------------------------------------------------------------- */
+	
+	String spatialQuery = "select fid, name, st_astext(" + strGeomField + ")" + " from " + strTableName;
+	
+	System.out.println("spatialQuery = " + spatialQuery);
+	
+	pstmt = conn.prepareStatement(spatialQuery);
+	rsmt = pstmt.getMetaData();
+	
+	//디버깅 출력문
+	//System.out.println("pstmt = " + pstmt);
+	
+	rs = pstmt.executeQuery();
+	
+	int length = rsmt.getColumnCount();
+	int index = 0;
+	
+	/* getColumnName과 데이터를 하나의 객체로  */
+	
+	while(rs.next()){
+		JSONObject obj = new JSONObject();
+		for(int i = 1 ; i <= length ; i++){
+			obj.put(rsmt.getColumnName(i).toString(),
+					rs.getString(i).toString()
+					);
+			//System.out.println("i = " + i + ", rs.getString(i).toString() = " + rs.getString(i).toString());
+			index++;
+			
+			if(i == length){
+				boolean check = checkBoundary(strTableName, (String)obj.get("st_astext"), jsonObject);
+				if(check == true){
+					System.out.println("check = true");
+					System.out.println("obj = " + obj.toString());
+					aryobj.put(obj);
+				}
+				if(check == false){
+					System.out.println("check = false");
+				}
+			}
+		}
+		/* aryobj.add(obj); */
+	}
+}
+
+catch(Exception e){
+	e.printStackTrace();
+	out.println("테이블 연결에 실패하였습니다.");
+	System.out.println("에러 = " + e.getMessage());
+}
+
+finally{
+	if(rs != null) try{rs.close();}catch(SQLException sqle){}
+	if(pstmt != null) try{pstmt.close();}catch(SQLException sqle){}
+	if(conn != null) try{conn.close();}catch(SQLException sqle){}
+}
+
+%><%=aryobj%>

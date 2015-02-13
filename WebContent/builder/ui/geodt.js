@@ -6,6 +6,7 @@
  * 		2014.11.18
  * 
  */
+var file_projection = "";
 
 function simple_alert(msg, title)
 {
@@ -106,25 +107,30 @@ function dialog_message_onclick(ui_btnID){
 	//기본지도 입력 부분
 	case "basemap_google":
 		changeBaseLayer("google");
-	break;	 
+		break;	 
 	case "basemap_osm":
 		changeBaseLayer("openstreetmap");
-	break;
-	
+		break;
+	case "basemap_daum":
+		changeBaseLayer("daum");
+		break;
+	case "basemap_naver":
+		changeBaseLayer("naver");
+		break;
 	
 	  //레스터 레이어 입력 부분
 	case "mnu_rasterbtn_make" :
 		  notify("info","레스터 이미지 생성");
-		  makeRaster("builder/download/georeferencing.png");
+		  makeRaster("builder/download/wms.png");
 		  break;
 	case "mnu_rasterbtn_move" :
 		notify("info","레스터 이동");
 		moveRaster(true);
-	break;
+		break;
 	case "mnu_rasterbtn_change" :
 		notify("info","레스터 크기 변경");
 		modifyRaster();
-	break;
+		break;
 	case "mnu_rasterbtn_transparent" :
 		notify("info","레스터 투명도 변경");
 		$( "#mnu_rasterbtn_slider_name" ).toggle("highlight",{},200);
@@ -133,32 +139,32 @@ function dialog_message_onclick(ui_btnID){
 		at:"center bottom",
 		of:"#mnu_btnraster"
 		});
-	break;
+		break;
 	case "mnu_rasterbtn_delete" :
 		notify("info","레스터 이미지 삭제");
 		deleteRaster();
-	break;
+		break;
 	//2014/11/27 김종회 (벡터 그리기)
 	case "mnu_editbtn_navi":
 		console.warn("벡터입력 - 이동버튼 이벤트");
 		ol_AllControlsDown(true,true,true,true);
-	break;
+		break;
 	case "mnu_editbtn_point":
 		console.warn("벡터입력 - 점 생성 버튼 이벤트");
 		ol_AllControlsDown(true,true,true,true);
 		removeControl();
-		drawPoint();
-	break;
+		drawPoint("");
+		break;
 	case "mnu_editbtn_line":
 		ol_AllControlsDown(true,true,true,true);
 		removeControl();
-		drawLine();
-	break;
+		drawLine("");
+		break;
 	case "mnu_editbtn_polygon":
 		ol_AllControlsDown(true,true,true,true);
 		removeControl();
-		drawPolygon();
-	break;
+		drawPolygon("");
+		break;
 	//유승범, 수정하기 버튼
 	case "mnu_modifybtn_select":
 		notify("info","벡터 선택");
@@ -168,18 +174,18 @@ function dialog_message_onclick(ui_btnID){
 		layernames.push("USER_LINE");
 		layernames.push("USER_POLYGON");
 		selectGroups(layernames);
-	break;
+		break;
 	// TODO 최토열 2014.11.27 벡터 수정
 	case "mnu_modifybtn_change":
 		notify("info","벡터 수정");
 		ol_AllControlsDown(true,true,true,true);
 		modifychange(); 
-	break;
+		break;
 	case "mnu_modifybtn_move":
 		notify("info","벡터 이동");
 		ol_AllControlsDown(true,true,true,true);
 		moveGroups();
-	break;
+		break;
 	
 	//그리기 UI 관련 버튼 세팅
 	case "mnu_btndraw_2D":
@@ -227,25 +233,33 @@ function dialog_message_onclick(ui_btnID){
 	//2D 수행 버튼 모음
 	case "mnu_btndraw_2D_add_point":
 		notify("success","2D - 입력 - 점 선택");
-	break;
+		removeControl();
+		drawPoint("");
+		break;
 	case "mnu_btndraw_2D_add_line":
 		notify("success","2D - 입력 - 선 선택");
-	break;
+		removeControl();
+		drawLine("");
+		break;
 	case "mnu_btndraw_2D_add_polygon":
 		notify("success","2D - 입력 - 면 선택");
-	break;
+		removeControl();
+		drawPolygon("");
+		break;
 	case "mnu_btndraw_2D_add_holepolygon":
 		notify("success","2D - 입력 - 홀 선택");
-	break;	
+		break;	
 	case "mnu_btndraw_2D_edit_move":
 		notify("success","2D - 수정 - 이동 선택");
-	break;
+		break;
 	case "mnu_btndraw_2D_edit_modify":
+		removeControl();
+		modifychange();
 		notify("success","2D - 수정 - 편집 선택");
-	break;
+		break;
 	case "mnu_btndraw_2D_delete":
 		notify("success","2D - 삭제 선택");
-	break;
+		break;
 	
 	
 	//그리기 UI 관련 버튼 세팅
@@ -300,38 +314,424 @@ function dialog_message_onclick(ui_btnID){
 	//3D 수행 버튼 모음
 	case "mnu_btndraw_3D_add_point":
 		notify("success","3D - 입력 - 점 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_add_line":
 		notify("success","3D - 입력 - 선 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_add_polygon":
 		notify("success","3D - 입력 - 면 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_add_holepolygon":
 		notify("success","3D - 입력 - 홀 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_add_extrude":
 		notify("success","3D - 입력 - 돌출 선택");
-	break;	
+		break;	
 	case "mnu_btndraw_3D_edit_move":
 		notify("success","3D - 수정 - 이동 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_edit_modify":
 		notify("success","3D - 수정 - 편집 선택");
-	break;
+		break;
 	case "mnu_btndraw_3D_delete":
 		notify("success","3D - 삭제 선택");
-	break;
-	
-		
-		
-		
+		break;
+	case "mnu_databasebtn_add": //DB연결 -> 열기
+		$("#mnu_database").dialog('open');
+		break;
+	case "dbconnect_tab_postgis_connect": //uitest.html -> 입력
+		ConnPostDB();
+		break;
+	case "mnu_btnattribute_select":  //속성보기 -> 선택
+		/*dbshow();
+		$("#mnu_attribute").dialog('open');*/
+		removeControl();
+		selectFeature();
+		break;
+	case "mnu_btnattribute_view": //속성보기 -> 보기
+		removeControl();
+		show_attributes();
+		//$("#mnu_attribute").dialog('open');
+		break;
+	case "mnu_databasebtn_save": //DB연결 -> 저장
+		saveDatas();
+		break;
+	case "mnu_databasebtn_close": //DB연결 -> 닫기
+		closePostDB();
+		break;
 	default:
 		alert(ui_btnID);
-	break;
+		break;
 	}
 }
 
+function closePostDB(){
+	//console.log(location);
+	var origin = location.origin;
+	var path_name = location.pathname;
+	
+	var url = origin + path_name;
+	
+	location.href = url;
+}
+
+//TODO Feature 선택하는 부분
+function selectFeature(){
+	var point_layer = map.getLayersByName("USER_POINT");
+	var line_layer = map.getLayersByName("USER_LINE");
+	var polygon_layer = map.getLayersByName("USER_POLYGON");
+	
+	var vector_point_layer = map.getLayersByName("VECTOR_POINT");
+	var vector_line_layer = map.getLayersByName("VECTOR_LINE");
+	var vector_polygon_layer = map.getLayersByName("VECTOR_POLYGON");
+	
+	var select = new OpenLayers.Control.SelectFeature(
+		[point_layer[0], line_layer[0], polygon_layer[0], vector_point_layer[0], vector_line_layer[0], vector_polygon_layer[0]],
+		{ 
+			toggle: false,
+			multiple: false, hover: false,
+			/*toggleKey: "ctrlKey",
+			multipleKey: "shiftKey",*/
+			box: true
+			/*click: function(_feature){
+				selectedFeature(_feature);
+			}*/
+		}
+	);
+	
+	//select.
+	
+	/*var select_hover = new OpenLayers.Control.SelectFeature(
+		[point_layer[0], line_layer[0], polygon_layer[0], vector_point_layer[0], vector_line_layer[0], vector_polygon_layer[0]],
+		{
+			multiple: false, hover: true
+		}	
+	);*/
+	
+	map.addControl(select);
+	//map.addControl(select_hover);
+	
+	select.activate();
+	select.onSelect = function(_feature){
+		selectedFeature(_feature);
+	};
+	//select_hover.activate();
+}
+
+function selectedFeature(_feature){
+	console.log("컴온!!");
+	
+	var fid = _feature.fid;
+	var layer_name = _feature.layer.name;
+	
+	if(layer_name == "USER_POINT" || layer_name == "VECTOR_POINT"){
+		getSelectedAttrPostGIS(fid, layer_name);
+		//$("#mnu_attribute").dialog('open');
+				
+		//removeControl();
+	}
+	
+	if(layer_name == "USER_LINE" || layer_name == "VECTOR_LINE"){
+		getSelectedAttrPostGIS(fid, layer_name);
+		//$("#mnu_attribute").dialog('open');
+		//removeControl();
+	}
+
+	if(layer_name == "USER_POLYGON" || layer_name == "VECTOR_POLYGON"){
+		getSelectedAttrPostGIS(fid, layer_name);
+		//$("#mnu_attribute").dialog('open');
+		
+		//테스트 영역
+		
+		
+		
+		
+		
+		/*var pointdialog = $("<div id='dialog_"+ layer_name + "' class='dialog'></div>");		
+		ptdialog.appendTo($(window));
+		ptdialog.dialog("open");*/
+		//removeControl();
+	}
+}
+
+//TODO 속성데이터를 DB에 저장하기 위한 함수
+function saveDatas(){
+	notify("info", "데이터베이스 연결 시도중.");
+	
+	/*alert("현재 테스트 중입니다.");
+	return;*/
+	
+	//var mainpage = location.host;
+	
+	/*var test_param = getParameter();
+	var split_param = test_param.split(",");*/
+	
+	var host = "";
+	var port = "";
+	var db_name = "";
+	var dbtable_name = "";
+	var id = getCookie("id");
+	var password = getCookie("password");
+	
+	//URL 파라미터 파싱하는 부분
+	/*for(var i=0 ; i<split_param.length ; i++){
+		switch(split_param[i]){
+		case "host" : host = split_param[i+1]; break;
+		case "port" : port = split_param[i+1]; break;
+		case "db_name" : db_name = split_param[i+1]; break;
+		case "dbtable_name" : dbtable_name = split_param[i+1]; break;
+		}
+	}*/
+	
+	if(tst_tableObject.check == true){
+		host = tst_tableObject.host;
+		port = tst_tableObject.port;
+		db_name = tst_tableObject.db_name;
+		dbtable_name = tst_tableObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		setDatasInPostGIS("","", param);
+	}
+	
+	if(tst_table_pointObject.check == true){
+		host = tst_table_pointObject.host;
+		port = tst_table_pointObject.port;
+		db_name = tst_table_pointObject.db_name;
+		dbtable_name = tst_table_pointObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		setDatasInPostGIS("","", param);
+	}
+	
+	if(tst_table_lineObject.check == true){
+		host = tst_table_lineObject.host;
+		port = tst_table_lineObject.port;
+		db_name = tst_table_lineObject.db_name;
+		dbtable_name = tst_table_lineObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		setDatasInPostGIS("","", param);
+	}
+	
+	/*if(param.host == "" || param.port == "" || port.db_name == ""){
+		notify("error", "먼저 DB에 연결을 해야합니다.");
+		return;
+	}*/
+}
+
+//TODO DB의 속성데이터를 보여주기 위한 함수
+function show_attributes(){
+	notify("info", "데이터베이스 연결 시도중.");
+	
+	var host = "";
+	var port = "";
+	var db_name = "";
+	var dbtable_name = "";
+	var id = getCookie("id");
+	var password = getCookie("password");
+	
+	if(tst_tableObject.check == true){
+		host = tst_tableObject.host;
+		port = tst_tableObject.port;
+		db_name = tst_tableObject.db_name;
+		dbtable_name = tst_tableObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		getAttributesPostGIS("","", param);	
+	}
+	
+	if(tst_table_pointObject.check == true){
+		host = tst_table_pointObject.host;
+		port = tst_table_pointObject.port;
+		db_name = tst_table_pointObject.db_name;
+		dbtable_name = tst_table_pointObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		getAttributesPostGIS("","", param);	
+	}
+	
+	if(tst_table_lineObject.check == true){
+		host = tst_table_lineObject.host;
+		port = tst_table_lineObject.port;
+		db_name = tst_table_lineObject.db_name;
+		dbtable_name = tst_table_lineObject.dbtable_name;
+		
+		var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+		getAttributesPostGIS("","", param);	
+	}
+}
+
+
+//TODO DB의 Spatial Data를 보여주기 위한 함수
+function show_spatial(_host, _port, _db_name, _dbtable_name, _id, _password){
+	var host = "";
+	var port = "";
+	var db_name = "";
+	var dbtable_name = "";
+	var id = "";
+	var password = "";
+	
+	host = _host;
+	port = _port;
+	db_name = _db_name;
+	dbtable_name = _dbtable_name;
+	id = _id;
+	password = _password;
+	
+	var param = makeDatabaseParameter(host, port, db_name, id, password, dbtable_name, "the_geom");
+	getSpatialPostGIS("","",param);
+}
+
+
+//작성자 : 유승범 (14-12-16)
+//데이터베이스 파라미터를 만든다.
+//_host : 서버 IP
+//_port : 데이터베이스포트
+//_account : 데이터베이스 계정 이름
+//_id : 데이터베이스 ID
+//_pass : 데이터베이스 비밀번호
+//_tname : 접속할 데이터베이스 테이블
+//_geom : 지오메트리 필드
+
+function makeDatabaseParameter(_host, _port, _account, _id, _pass, _tname, _geom){
+	var param = [];
+	param.host = _host;
+	param.port = _port;
+	param.account = _account;
+	param.id = _id;
+	param.pass = _pass;
+	param.tname = _tname;
+	param.geom = _geom;
+	return param;
+}
+
+//TODO PostGIS에 연결하기 위한 정보 보내는 함수
+function ConnPostDB(){
+	
+	var input_host = document.getElementById("dbconnect_tab_postgis_host");
+	var input_port = document.getElementById("dbconnect_tab_postgis_port");
+	var input_db_name = document.getElementById("dbconnect_tab_postgis_sid");
+	var input_dbtable_name = document.getElementById("dbconnect_tab_postgis_service");
+	var input_id = document.getElementById("dbconnect_tab_postgis_id");
+	var input_password = document.getElementById("dbconnect_tab_postgis_pass");
+	  
+	var host = input_host.value;
+	var port = input_port.value;
+	var db_name = input_db_name.value;
+	var dbtable_name = input_dbtable_name.value;
+	var id = input_id.value;
+	var password = input_password.value;
+	
+	
+	//location += "?host="+host+"&port="+port+"&db_name="+db_name+"&dbtable_name="+dbtable_name+"&id="+id+"&password="+password;*/
+	
+	setCookie("id", id, 1);
+	setCookie("password", password, 1);
+	
+	if(dbtable_name == "tst_table" && tst_tableObject.check == true){
+		notify("warning", dbtable_name + "에 이미 접속되어 있습니다.");
+		return;
+	}
+	
+	if(dbtable_name == "tst_table_line" && tst_table_lineObject.check == true){
+		notify("warning", dbtable_name + "에 이미 접속되어 있습니다.");
+		return;
+	}
+	
+	if(dbtable_name == "tst_table_point" && tst_table_pointObject.check == true){
+		notify("warning", dbtable_name + "에 이미 접속되어 있습니다.");
+		return;
+	}
+	
+	switch(dbtable_name){
+	case "tst_table" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+	case "tst_table_point" : setTstTablePointObject(host, port, db_name, dbtable_name);
+		break;
+	case "tst_table_line" : setTstTableLineObject(host, port, db_name, dbtable_name);
+		break;
+	case "kz_astana_districts" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_streets" : setTstTableLineObject(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_water" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_microdistricts" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_quartals" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_grass" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+    case "kz_astana_buildings" : setTstTableObjcet(host, port, db_name, dbtable_name);
+		break;
+	}
+	
+	if(host!="" && port!="" && db_name!=""){
+		var id = getCookie("id");
+		var password = getCookie("password");
+		show_spatial(host, port, db_name, dbtable_name, id, password);
+	}
+	
+	else{
+		setCookie("id", '', -1);
+		setCookie("password", '', -1);
+	}
+
+	//location.href = location.origin + location.pathname + "?host="+host+"&port="+port+"&db_name="+db_name+"&dbtable_name="+dbtable_name;
+	
+	//window.open("../uitest.html?host="+host+"&port="+port+"&db_name="+db_name+"&dbtable_name="+dbtable_name+"&id="+id+"&password="+password);
+	//console.warn("location = " + location);
+}
+
+
+//TODO 각 테이블들의 객체 설정
+function setTstTableObjcet(_host, _port, _db_name, _dbtable_name){
+	tst_tableObject.host = _host;
+	tst_tableObject.port = _port;
+	tst_tableObject.db_name = _db_name;
+	tst_tableObject.dbtable_name = _dbtable_name;
+	tst_tableObject.check = false;
+}
+
+function setTstTablePointObject(_host, _port, _db_name, _dbtable_name){
+	tst_table_pointObject.host = _host;
+	tst_table_pointObject.port = _port;
+	tst_table_pointObject.db_name = _db_name;
+	tst_table_pointObject.dbtable_name = _dbtable_name;
+	tst_table_pointObject.check = false;
+}
+
+function setTstTableLineObject(_host, _port, _db_name, _dbtable_name){
+	tst_table_lineObject.host = _host;
+	tst_table_lineObject.port = _port;
+	tst_table_lineObject.db_name = _db_name;
+	tst_table_lineObject.dbtable_name = _dbtable_name;
+	tst_table_lineObject.check = false;
+}
+
+//TODO 쿠키 생성 & 삭제
+function setCookie(cName, cValue, cDay){
+    var expire = new Date();
+    expire.setDate(expire.getDate() + cDay);
+    cookies = cName + '=' + escape(cValue) + '; path=/ '; // 한글 깨짐을 막기위해 escape(cValue)를 합니다.
+    if(typeof cDay != 'undefined') cookies += ';expires=' + expire.toGMTString() + ';';
+    document.cookie = cookies;
+}
+
+// 쿠키 가져오기
+function getCookie(cName) {
+    cName = cName + '=';
+    var cookieData = document.cookie;
+    var start = cookieData.indexOf(cName);
+    var cValue = '';
+    if(start != -1){
+        start += cName.length;
+        var end = cookieData.indexOf(';', start);
+        if(end == -1)end = cookieData.length;
+        cValue = cookieData.substring(start, end);
+    }
+    return unescape(cValue);
+}
 
 
 // TODO 상단 메뉴바 버튼 모음
@@ -343,7 +743,7 @@ function mnu_dialog_func(ui_func){
 	case "#mnu_basemap":
 		//기본지도 상단메뉴를 눌렀을 때
 		
-		$(ui_func).dialog('open');
+		$(ui_func).dialog('open'); //만들어진 다이얼로그를 만드는 것 (ui_func)는 이름이다. (즉 mnu_basemap임) 
 		break;
 	case "#mnu_database":
 		hideAllButtonSet("#mnu_btndatabase");
@@ -357,13 +757,17 @@ function mnu_dialog_func(ui_func){
 		});
 		
 		break;
-	case "#mnu_projection":
+	case "#mnu_layers":
 		//not1("프로젝션 기능을 제공합니다.");
-		notify('warning', "프로젝션 기능을 제공합니다.");
+		notify('warning', "테스트!!!!!!!!!!!!");
+		
+		geodtjs.ui.createLayerDialog2("layerlist", "layerlist", geodtjs.map2d.map.layers);
+		 
+        
 		break;
 	case "#mnu_draw":
 		//벡터 그리기 버튼
-		hideAllButtonSet("#mnu_btndraw");
+		/*hideAllButtonSet("#mnu_btndraw");
 		var radio_btn = $( "#mnu_btndraw" );	
 		//버튼을 메뉴로 이동시키기
 		$("#mnu_btndraw" ).position({
@@ -373,7 +777,32 @@ function mnu_dialog_func(ui_func){
 		});		
 		radio_btn.toggle("highlight", {}, 200);
 		//초기 (이동버튼)으로 변경하는 루틴
+*/		
+		geodtjs.ui.createEntityDialog();
 		break;
+	/*case "#mnu_draw":
+		//벡터 그리기 버튼
+		
+		var radio_btn = $( "#mnu_btndraw2" );
+		//버튼을 메뉴로 이동시키기
+		radio_btn.css({
+			'position' : 'absolute',
+			
+		});
+		radio_btn.position({
+			'my' : 'center top',
+			'at' : 'center bottom',
+			'of' : $('#ui_menu_draw'),
+		});
+		
+		$("#mnu_btndraw2" ).position({
+			//my:"center top",
+			//at:"center bottom",
+			of:"#ui_menu_draw"	
+		});	
+		radio_btn.toggle("highlight", {}, 200);
+		//초기 (이동버튼)으로 변경하는 루틴
+		break;*/
 	case "#mnu_raster":
 		//벡터 그리기 버튼
 		hideAllButtonSet("#mnu_btnraster");			//다른 버튼을 전부 숨기기
@@ -402,7 +831,6 @@ function mnu_dialog_func(ui_func){
 		});
 		
 		
-		//dbshow();
 		break;
 	/*case "#mnu_modify":
 		hideAllButtonSet("#mnu_btnmodify");
@@ -423,49 +851,214 @@ function mnu_dialog_func(ui_func){
 		break;
 	case "#mnu_file":
 		//파일 업로드
+            var ui = geodtjs.ui;
+            ui.create("canvasMap");
+            
+            var append = [];
+			var formid = 'geodtjs_ui_uploadshp_' + "uploader";
+			
+			var div = $("<div id='" + formid + "'></div>");
+			/* div.html("<from action='src/jsp/shpuploader.jsp' method='post' enctype='multipart/form-data'>"+
+				"<input type='file' name='file' size='50'/>" +
+				"<input type='submit' value='Upload File'/>" + 
+			"</form>"); */
+			
+			var form = $("<from action='builder/file/shpuploader.jsp' method='post' enctype='multipart/form-data'>");
+			var uploader = $("<input id='"+ formid + "_file' type='file' name='file' size='30'/>");
+			var submit = $("<input type='submit' value='파일 업로드'/>");
+			var projInfo = $("<div id='projection_information'></div>");
+			var loadshp = $("<button> 업로드 파일 입력 </button>").attr('disabled', 'disabled');
+			var progress = $("<div id='progress_fileuploader'></div>").progressbar();
+			//var progresslabel = $("<div id='progress_label'>testing</div>");
+			var projections = $("<button> 좌표체계 변환 </button>").attr('disabled', 'disabled');
+			
+			//상세 설정 (현재 표현 프로젝션을 표시)
+			projInfo.css({'height':'50px'});
+			projInfo.text("display Projection : " + geodtjs.map2d.displayprojection.projCode);
+		
+			//프로그래스바 설정
+			progress.css({'width':'100%', 'height':'20px'});
+			
+			//붙이기
+			//progresslabel.appendTo(progress);
+                uploader.appendTo(form);
+                submit.appendTo(form);                
+                progress.appendTo(form);                
+                projInfo.appendTo(form);
+                projections.appendTo(form);
+                loadshp.appendTo(form);
+                form.appendTo(div);
+                
+            //이벤트 부분
+            loadshp.click(function(){
+               shpimport(filename, file_projection, progress);
+            });
+            
+            projections.click(function(){
+            	console.log("좌표체계 버튼 입력");
+            	loadshp.removeAttr('disabled');
+            	//ui.createProjectionDialog("좌표변환", "projection", map.layers, geodtjs.map2d.getProjNames());
+            	ui.createProjectionSearcher("좌표변환", "projection", geodtjs.map2d.getProjNames());
+            });
+
+            submit.click(function(){
+               console.log("submit clicked");
+
+               if(!jQuery.ajax){
+                   alert("ajax 없음");
+               }
+               //첨부 파일을 multipart / form-data로 처리하기 위한 부분
+               var data = new FormData();
+               $.each($("#"+formid+"_file")[0].files, function(i, file){
+                   data.append('file-'+i, file);
+			});
+				
+				$.ajax({
+					url: 'builder/file/shpuploader.jsp',
+					type: 'post',
+					data : data,
+					contentType : false,
+					processData: false,
+					success : function(data, textStatus, jqXHR){
+						progress.progressbar("option", {value : true});
+						progress.progressbar("value", 0);
+						console.log("uploaded");
+						var jsonStr = jqXHR.responseText;
+			            var jsonObj = eval('('+jsonStr+')');
+			            if(jsonObj.length < 1){
+			            	notify("error", "테이블 연결 실패");
+			            	return;
+			            }
+			            var progresslen =  50 / jsonObj.length;
+			            for(var i in jsonObj){
+			            	progress.progressbar("value", progresslen);
+			            	if(typeof jsonObj[i].filename == 'string'){
+				            	filename = jsonObj[i].filename;
+			            	}
+			            }
+			            
+			            //등록 대기 시간 설정
+			            setTimeout(function(){
+			            	progress.progressbar("value", 100);
+			            	//loadshp.removeAttr('disabled');
+			            	projections.removeAttr('disabled');
+			            	alert("데이터가 등록 되었습니다.");
+			            },3000);
+			            
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown){
+						console.error("error in jsp");
+						console.log(XMLHttpRequest);
+						console.log(textStatus);
+						console.log(errorThrown);
+						progress.progressbar("option", {value : true});
+					}
+				});
+			});
+			append.push(div);
+			ui.createDialog('uploader', '파일 입력', append, 500);
+
+            console.log(ui);
 		break;
 	case "#mnu_config":
 		//다이얼로그 오픈
-		
 		console.log(map);
-		$(ui_func).dialog('open');
-		
 		break;
 	}
 }
 
+//유승범 추가
+/*
+    SHP 파일 입력하는 부분
+*/
+function shpimport(_filename, _projection, _progress){
+			//버튼이 눌렸을 때 발생하는 이벤트
+			notify("info","shp 버튼 클릭");
+			
+			
+			//shp file import (js-shapefile-to-geojson 사용)
+			var parser = new OpenLayers.Format.GeoJSON();
+			var step = 0;
+			var count = 1;
+			
+			/*var div = $("<div id = 'dialog_progress' title='Converting'></div>");
+			var label = $("<div class = 'progress-label'></div>");
+			var progress = $("<div id = 'progress'></div>").progressbar({
+				value:false,
+				change :function(){
+					label.text("Loading...");
+				},
+				complete :function(){
+					label.text("Complete");
+				}
+				});
+			label.appendTo(progress);
+			progress.appendTo(dialog);
+			var dialog = div.dialog({
+				modal : true,
+				width : '500px',
+				title : "Converting"
+				});
+			dialog.dialog("open");*/
+			
+			var LayerStyle = OpenLayers.Util.extend({},
+					OpenLayers.Feature.Vector.style['default']
+					);
+			LayerStyle.fillOpacity = 0.4;
+			LayerStyle.fillColor = geodtjs.ui.getRandomColor();
+			LayerStyle.graphicOpacity = 0.8;
+			LayerStyle.strokeColor = geodtjs.ui.getRandomColor();
+			LayerStyle.strokeWidth = 1;
+			var stylemap = new OpenLayers.StyleMap(LayerStyle);
+			
+			
+
+			
+			var shplayer = new OpenLayers.Layer.File("vector_"+_filename, {
+				projection: geodtjs.map2d.displayprojection,
+				preFeatureInsert : function(_feature){
+					_feature.geometry.transform
+						(
+								new OpenLayers.Projection(_projection),
+								geodtjs.map2d.projection
+						);
+				},
+				styleMap : stylemap
+			});
+			
+			
+			geodtjs.map2d.map.addLayer(shplayer);
+			var shppath = _filename;
+			console.log(_filename);
+			
+			var opts = {shp : shppath};
+			var shapefile = new Shapefile(opts, function(data){
+				console.log("data");
+				var features = parser.read(data.geojson);
+				step = 100 / features.length;
+				shplayer.addFeatures(features);
+				geodtjs.map2d.map.zoomToExtent(shplayer.getDataExtent());
+				alert("파일 입력이 완료 되었습니다.");
+			});
+			
+		}
 
 
 
-function dbshow(){
-	notify("info", "데이터베이스 연결 시도중.");
-	var mainpage = location.host;
-	console.log(mainpage);
-	console.log(location.pathname);
-	var param = makeDatabaseParameter("localhost", "5432", "tester", "postgres", "postgres", "testdb", "the_geom");
-	requestCORS("","", param);
-}
-
-
-//작성자 : 유승범 (14-12-16)
-//데이터베이스 파라미터를 만든다.
-//_host : 서버 IP
-//_port : 데이터베이스포트
-//_account : 데이터베이스 계정 이름
-//_id : 데이터베이스 ID
-//_pass : 데이터베이스 비밀번호
-//_tname : 접속할 데이터베이스 테이블
-//_geom : 지오메트리 필드
-function makeDatabaseParameter(_host, _port, _account, _id, _pass, _tname, _geom){
-	var param = [];
-	param.host = _host;
-	param.port = _port;
-	param.account = _account;
-	param.id = _id;
-	param.pass = _pass;
-	param.tname = _tname;
-	param.geom = _geom;
-	return param;
+function getParameter() {
+    var strURL = location.search;
+    var tmpParam = strURL.substring(1).split("&");
+    if(strURL.substring(1).length > 0){
+    	var param="";
+        var Params = new Array();
+        for(var i=0;i<tmpParam.length;i++){
+            Params[i] = tmpParam[i].split("=") + ",";
+            //return Params[1];
+            param += Params[i];
+        }
+        return param;
+     }
+     return "";
 }
 
 //레스터 슬라이더에 관련된 함수
@@ -596,21 +1189,46 @@ function makeGridData(_index, _schema, _datas){
 	
 	console.log(data);
 	
-	
 	return data;
-} 
+}
+
+//TODO 맵 이동 끝났을 때 실행
+//개발자 : 김종회
+function onMoveEnd(){
+	//alert("움직였다 끝났지요 룰루~");
+	var map_bounds = map.getExtent();
+	getDatasFromBounds(map_bounds);
+}
 
 
 //HTML의 Element에 Remove 콜을 할 수 있게 하는 루틴
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
-}
+};
 NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
     for(var i = 0, len = this.length; i < len; i++) {
         if(this[i] && this[i].parentElement) {
             this[i].parentElement.removeChild(this[i]);
         }
     }
+}; 
+
+//TODO 맵을 이동시키는 함수
+//개발자 : 김종회
+function moveMap(geoX, geoY){
+	var sum_geoX = new Number();
+	var sum_geoY = new Number();
+	
+	for(var i in geoX){
+		sum_geoX += Number(geoX[i]);
+	}
+	
+	for(var i in geoY){
+		sum_geoY += Number(geoY[i]);
+	}
+	
+	var avg_geoX = sum_geoX / geoX.length;
+	var avg_geoY = sum_geoY / geoY.length;
+	
+	map.setCenter(new OpenLayers.LonLat(avg_geoX, avg_geoY));
 }
-
-

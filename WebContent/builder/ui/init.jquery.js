@@ -232,7 +232,7 @@ $(function(){
 	});
 	
 	
-	//데이터베이스 버튼 세팅
+	//속성 버튼 세팅
 	$( "#mnu_btnattribute" ).buttonset().hide();
 	$("#mnu_btnattribute_select").button({
 		text:true,
@@ -240,7 +240,7 @@ $(function(){
 	        primary: "ui-icon-key"
 	      }
 	});
-	$("#mnu_btnattribute_modify").button({
+	$("#mnu_btnattribute_view").button({
 		text:true,
 		icons: {
 	        primary: "ui-icon-info"
