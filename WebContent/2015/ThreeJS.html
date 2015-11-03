@@ -1,0 +1,586 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>OpenGDS/Builder a.0.0.001</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.4.js"></script>
+<script language="JavaScript" type="text/javascript" src="inc/Projector.js"></script>
+<script language="JavaScript" type="text/javascript" src="inc/OrbitControls.js"></script>
+
+<!-- <script language="JavaScript" type="text/javascript" src="includes/three65/js/Detector.js"></script>
+<script language="JavaScript" type="text/javascript" src="includes/three65/js/libs/stats.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="includes/three65/GIT/Controls/MapControls.js"></script> -->
+
+
+</head>
+   
+    
+<body>
+	<div id="canvasMap" class="ajaxCanvasMap" style="width:100%; height:400px;"></div>		<!-- 맵을 그리는 지역 -->
+	<script>
+var images=[];
+var wmsRequestMessages=[];
+
+var scene;
+var camera;
+var controls;
+var stats;
+var renderer;
+var plane;
+var planes = [];				//drawing plane
+
+
+//draw object
+var object;						//drawing object usage
+var objectPath=[];					//drawing object path
+var objects = [];				//drawing objects (user add)
+
+//mouse values
+var mousepressed;
+var mousemoving;
+var mouse2D;
+var rayVector;
+var projector;
+var raycaster;
+var clickTime;
+
+var selectObj;
+var IdentifierzIndex;
+var planeSize;
+var planeNum;
+var zoomLevel;
+var DrawMode;			//드로잉 모드 관련, 0 is not defined, 1 is point, 2 is line, 3 is polygon
+var TempLine;
+var TempStartPoint;
+var TempEndPoint;
+var drawingMap;
+
+initValues();
+initListener();
+drawMap();
+render();
+
+//
+function initValues(){
+	drawingMap = document.getElementById('canvasMap');
+	mouse2D = new THREE.Vector2();
+	rayVector = new THREE.Vector3(0,0,1);
+	projector = new THREE.Projector();
+	raycaster = new THREE.Raycaster();
+	selectObj = new THREE.Mesh();
+	
+	camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
+	scene = new THREE.Scene();
+	IdentifierzIndex = 1500;
+	camera.position.z = 500;
+	zoomLevel = camera.position.z/IdentifierzIndex;
+	planeSize = 250;
+	planeNum = 20;
+	mousepressed = -1;
+	mousemoving = -1;
+	DrawMode = "";
+	clickTime = null;
+}
+
+/*
+ * Drawing Map
+ 	GIT
+ */
+function drawMap(){
+	
+	
+	controls = new THREE.OrbitControls(camera);
+	controls.damping = 0.2;
+	controls.addEventListener('change',render);
+	
+	//size of web browser size (100%, 100%)
+	renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    drawingMap.appendChild(renderer.domElement);
+	
+	
+	var url = "wms.png";
+	var texture = new THREE.ImageUtils.loadTexture(	url );
+	texture.needsUpdate = true;
+	console.log(texture);
+	
+	
+	makeplane(planeSize,planeSize,
+			planeNum,planeNum, '0xff4444');
+	
+	//include stats in map (FPS Checker)
+/* 	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.position = '0px';
+	stats.domElement.style.zIndex = 100; 
+	drawingMap.appendChild(stats.domElement);
+	*/
+	//add event, change window size
+	window.addEventListener('resize', onWindowSize, false);
+    animate();	 
+}
+
+function initListener(){
+	if(drawingMap.addEventListener){
+		drawingMap.addEventListener('mousedown', onDocumentMouseDown, true);
+		
+		//drawingMap.addEventListener('click', onMapClick, true);
+		//drawingMap.addEventListener('dblclick', onMapDoubleLeftClick, true);
+		drawingMap.addEventListener('mousemove', onDocumentMouseMove, false);
+		drawingMap.addEventListener('mousewheel', onDocumentMouseWheel, false );
+		document.addEventListener('keyup', onDocumentKeyUp, false);
+	}
+	else{
+		//drawingMap.attachEvent('onclick', onMapClick);
+		//drawingMap.attachEvent('ondblclick', onMapDoubleLeftClick);
+	}
+	
+	
+	
+	
+	
+	//document.addEventListener('mousedown', onDocumentMouseDown, true);
+	
+	
+}
+
+function onMapClick(){
+	
+}
+
+//change window size, and redraw all world
+function onWindowSize(){
+	camera.aspect = window.innerWidth/ window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth , window.innerHeight);
+	render();
+}
+
+//event listener, during mouse move
+function onDocumentMouseMove(event){
+	event.preventDefault();
+	mouse2D.x= (event.clientX / window.innerWidth)*2 -1;
+	mouse2D.y= - ( event.clientY / window.innerHeight ) * 2 + 1;
+	//raycaster = projector.pickingRay(mouse2D.clone(), camera);
+	raycaster.setFromCamera(mouse2D, camera);
+	var intersects = raycaster.intersectObjects(planes);
+	var intersector;
+	if(intersects.length>0){
+		intersector = getRealIntersector(intersects);		//get intersections
+	}
+	
+	if(DrawMode == 0){
+		//nomal Mode		
+		if(mousepressed == -1){
+			//if button is not clicked, select object using ray transform
+				if(intersector){
+					scene.remove(selectObj);
+					
+					var geom = new THREE.Geometry();
+					
+					geom = intersector.object.geometry;
+					var materialObj= new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
+					selectObj = new THREE.Mesh(geom, materialObj);
+					selectObj.position.x =  intersector.object.position.x;
+					selectObj.position.y =  intersector.object.position.y;
+					selectObj.position.z =  intersector.object.position.z;
+					scene.add(selectObj);
+					render();				
+				}
+			}
+	}
+	else if(DrawMode == 1){
+		//Drawing Line Mode
+		//console.log(mousepressed);
+		if(mousepressed == -1){
+			
+			TempEndPoint = intersects[0].point;
+			
+			drawTempLine(TempStartPoint, TempEndPoint);
+			render();
+		}
+		
+	}
+	
+	
+}
+
+//event listerner, during mouse wheel moved
+function onDocumentMouseWheel(){	
+}
+
+//event listener, during mouse down
+function onDocumentMouseDown(event){
+	if(clickTime){
+		//double clicked
+		console.log(clickTime);
+		onDocumentClick(event);
+		return;
+	}
+	else{
+		clickTime = 1;
+		setTimeout("onDocumentClick(event)",400);
+		return;
+	}
+	//mouse position setting
+	mouse2D.x= (event.clientX / window.innerWidth)*2 - 1;
+	mouse2D.y= - ( event.clientY / window.innerHeight ) * 2 + 1;
+	raycaster = projector.pickingRay(mouse2D.clone(), camera);
+	var intersects = raycaster.intersectObjects(planes);
+	
+	//if no planes selection, return events
+	if(intersects[0].point == null){
+		mousepressed = -1;
+		console.log("any intersection can not defined : onDocumentMouseDown");
+		return;
+	}
+	
+	console.log("onDocumentMouseDown");
+	
+	switch(event.button){
+	case 0:
+		//left button down
+		mousepressed = 0;
+		if(DrawMode == "point"){
+			//Point Mode
+			drawPoint(intersects[0].point);
+		}
+		break;
+	case 1:
+		//middle button down
+		mousepressed = 1;
+		break;
+	case 2:
+		//right button down
+		mousepressed = 2;
+		
+		break;
+	default:		
+		//any button
+		mousepressed = -1;
+		break;
+	}
+	if(event.button == 0){
+		
+		//Drawing Point
+		mousepressed = 0;			//left button is down
+		
+		//drawPoint();
+		
+		//if line mode
+		
+		if(DrawMode == 0){
+			//first click
+			drawPoint(intersects[0].point);
+			TempStartPoint = intersects[0].point;
+			DrawMode = 1;
+		}
+		else if(DrawMode == 1){
+			//Line Create
+			TempEndPoint = TempStartPoint;
+		}
+			
+		console.log(objectPath);
+	}
+	else if(event.button == 2){
+		console.log("right down");
+		drawLine();
+		objectPath = [];
+		DrawMode = 0;
+		mousepressed = -1;
+	}
+		
+	document.addEventListener('mouseup', onDocumentMouseUp, false);
+}
+
+//mouse clicked
+function onDocumentClick(event){
+	clickTime = 1;
+	console.log("Clicked");
+	console.log(event.clientX);
+}
+
+function onDocumentDoubleClicked(event){	
+	console.log("double Clicked");
+	console.log(event.clientX);
+}
+
+
+//Keyboard Event
+function onDocumentKeyUp(event){
+	switch(event.keyCode){
+	case 80:
+		//p key pressup, draw point
+		DrawMode = "point";
+		console.log(DrawMode);
+		break;
+	case 76:
+		//l key pressup, draw line
+		DrawMode = "line";
+		console.log(DrawMode);
+		break;
+	case 82:
+		//r key pressup, draw rectangle
+		DrawMode = "rect";
+		console.log(DrawMode);
+		break;
+	case 69:
+		//e key pressup, draw extrude mode
+		DrawMode = "extrude";
+		console.log(DrawMode);
+		break;
+	default:
+		//undefined
+		DrawMode = "";
+		console.log(DrawMode);
+		break;
+	}
+}
+
+function onDocumentLeftDoubleClick(event){
+	console.log("DbClk");
+}
+
+function drawPoint(){
+	console.log("Drawing Point");
+	raycaster = projector.pickingRay(mouse2D.clone(), camera);
+	var intersects = raycaster.intersectObjects(planes);
+	
+	var objectGeom = new THREE.SphereGeometry(20, 32, 32);
+	var objectMaterial = new THREE.MeshBasicMaterial({color:0xff0000, shading:THREE.FlatShading});
+	object = new THREE.Mesh(objectGeom, objectMaterial);		
+	object.position.x = intersects[0].point.x;
+	object.position.y = intersects[0].point.y;
+	object.position.z = intersects[0].point.z + 0.2;
+	
+	objects.push(object);
+	scene.add(object);
+}
+
+function drawPoint(position){
+	console.log("Drawing Point");
+	
+	var objectGeom = new THREE.SphereGeometry(10, 32, 32);
+	var objectMaterial = new THREE.MeshBasicMaterial({color:0xff0000, shading:THREE.FlatShading});
+	var object_point = new THREE.Mesh(objectGeom, objectMaterial);		
+	object_point.position.x = position.x;
+	object_point.position.y = position.y;
+	object_point.position.z = position.z + 0.2;
+	
+	objects.push(object_point);
+	scene.add(object_point);
+}
+
+function drawTempLine(first, last){
+	console.log("drawing line - simple");
+	
+	if(TempLine != null){
+		scene.remove(TempLine);
+	}
+		var objectGeom = new THREE.Geometry();
+		objectGeom.vertices.push(first);
+		objectGeom.vertices.push(last);
+		var objectMaterial = new THREE.LineBasicMaterial({color:0x0000FF,linewidth: 5, opacity:1});
+		TempLine = new THREE.Line(objectGeom, objectMaterial, THREE.LinePieces);
+		scene.add(TempLine);	
+}
+
+
+
+function drawLine(){
+	console.log("drawing line");
+	
+	if(objectPath.length < 2)		return;
+	for(var i = 1 ; i < objectPath.length ; i++){
+		if(i == 1){
+			drawPoint(objectPath[0]);
+		}
+		var objectGeom = new THREE.Geometry();
+		objectGeom.vertices.push(objectPath[i-1]);
+		objectGeom.vertices.push(objectPath[i]);
+		var objectMaterial = new THREE.LineBasicMaterial({color:0x0000FF,linewidth: 5, opacity:1});
+		object = new THREE.Line(objectGeom, objectMaterial, THREE.LinePieces);		
+		
+		
+		object.scale.x = object.scale.y = object.scale.z =  1;
+		object.position.x = 0;
+		object.position.y = 0;
+		object.position.z = 0;
+		objects.push(object);
+		scene.add(object);	
+	}
+	
+	console.log(object);
+	drawPoint(objectPath[objectPath.length-1]);
+	
+	
+}
+
+function onDocumentMouseUp(event){
+	if(mousepressed == 0){
+		mousepressed = -1;			//left button is up		
+	}
+	document.removeEventListener('mouseup', onDocumentMouseUp, false);
+}
+
+
+
+function getRealIntersector( intersects ) {
+
+	for( i = 0; i < intersects.length; i++ ) {
+
+		intersector = intersects[ i ];
+
+		if ( intersector.object != selectObj ) {
+			return intersector;
+
+		}
+
+	}
+
+	return null;
+
+}
+
+
+
+
+function render(){
+	
+	//ray vector for picking object
+	camera.updateProjectionMatrix(true);
+	//rayVector.set(mouse2D.x, mouse2D.y, 0.1);
+	//projector.unprojectVector(rayVector,camera);
+	raycaster.ray.set(camera.position, rayVector.sub(camera.position).normalize());
+	
+	renderer.render(scene, camera);
+	//stats.update();
+}
+
+function animate() {
+	//requestAnimationFrame( animate );	
+	//controls.update();
+	
+}
+
+
+/*
+ * Geospztial Information Technology
+ 
+ Drawing Plane using Three.js (r68)
+ 
+ developer : Seungbum Ryu
+ comment : make plane with 
+ */
+function makeplane(width, height, numx, numy, colors){
+	console.log("make plane" +" : "+ width +" , "+ height +" , "+ numx +" , "+ numy);
+	if(numx < 1){
+		console.log("Can not x-plane size under 1, min x plane size is 1");
+		numx = 1;
+	}
+	if(numy < 1){
+		console.log("Can not y-plane size under 1, min y plane size is 1");
+		numy = 1;
+	}
+	
+	
+	var harfx = numx/2;
+	var harfy = numy/2;
+	
+	//delete plane
+	if(planes.length > 0){
+		for(var i = 0; i < planes.length; i++){
+			scene.remove(planes[i]);
+		}
+		console.log("remove plane");
+		planes = [];
+	}
+	//make planes
+	
+	THREE.ImageUtils.crossOrigin = "";
+	for(var i = 0; i < numx ; i++){
+		for(var j = 0; j < numy; j++){
+			var plane = new THREE.PlaneGeometry(width, height);
+			
+			/* var img = new Image();
+			img.src = "http://khm1.googleapis.com/kh?v=180&hl=en&x="+i+"&y="+j+"&z=6&token=52383";
+			var material = new THREE.MeshPhongMaterial({
+				map : img,
+			}); */
+			/* material = new THREE.MeshBasicMaterial({color: colors, wireframe : true, transparent: true, opacity: 0.3 });
+			*/
+			material = new THREE.MeshBasicMaterial({
+				map :  THREE.ImageUtils.loadTexture("http://khm1.googleapis.com/kh?v=180&hl=en&x="+i+"&y="+j+"&z=5&token=52383"),
+					
+			});
+			material.needsUpdate = true;
+			material.map.wrapT = THREE.RepeatWrapping;
+			material.map.wrapS = THREE.RepeatWrapping;
+			material.map.flipY = false;
+			var PlaneMesh = new THREE.Mesh(plane, material);
+			PlaneMesh.position.x = width * (harfx - i) * -1;
+			PlaneMesh.position.y = height * (harfy - j) * -1;
+			PlaneMesh.position.z = 100;
+			planes.push(PlaneMesh);
+			scene.add(PlaneMesh);
+		
+			
+			
+			//material =  new THREE.MeshBasicMaterial({color: colors, wireframe : true, transparent: true, opacity: 0.3 });
+			
+				/* var loadImage = THREE.ImageUtils.loadTexture("http://khm1.googleapis.com/kh?v=180&hl=en&x="+i+"&y="+j+"&z=6&token=52383",
+						null,
+						function(){
+							//make mesh and plane
+							loadImage.needsUpdate = true;
+							var material;
+							var plane = new THREE.PlaneGeometry(width, height);
+							//if success
+							material = new THREE.MeshPhongMaterial({
+								map : loadImage,
+							});
+							//material = new THREE.MeshBasicMaterial({color: colors, wireframe : true, transparent: true, opacity: 0.3 });
+							var PlaneMesh = new THREE.Mesh(plane, material);
+							PlaneMesh.position.x = width * (harfx - i) * -1;
+							PlaneMesh.position.y = height * (harfy - j) * -1;
+							PlaneMesh.position.z = 100;
+							planes.push(PlaneMesh);
+							scene.add(PlaneMesh);
+							console.log("["+i + ", "+j+"] : OK!");
+						});
+			 */
+			/* $.ajax({
+				xhrFields: {
+			        withCredentials: true
+			    },
+				url : "http://khm1.googleapis.com/kh?v=180&hl=en&x="+i+"&y="+j+"&z=6&token=52383",
+				
+				type : "GET",
+				processData: false,
+				contentType: "image/png",
+				success : function(data){
+					
+				}
+			}); */
+			
+			
+		}	
+	}
+	
+	console.log("Planes : " + planes.length);
+	
+	//adding scene
+	/* for(var k = 0; k < planes.length; k++){
+		scene.add(planes[k]);
+	}	 */
+}
+
+</script>
+
+</body>
+</html>

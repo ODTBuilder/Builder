@@ -1,0 +1,97 @@
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Map Viewer 3D Test. RS.Ryu</title>
+</head>
+
+
+<!-- jQuery CDN -->
+	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+	
+
+<!-- 부트스트랩 CDN -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<!-- 오픈레이어스-세슘 프로젝트 -->
+	<!-- <link rel="stylesheet" href="inc/ol-cesium/1.9/ol3/css/ol.css" type="text/css">
+	<script src="inc/ol-cesium/1.9/ol3/ol.js"></script> -->
+	<!-- <script src="inc/ol-cesium/1.9/Cesium/Cesium.js"></script>
+	<script src="inc/ol-cesium/1.9/ol3cesium-debug.js"></script> -->
+	
+	<!--
+	 오픈레이어스
+	 3.10.1
+	 -->
+	<link rel="stylesheet" href="inc/ol/v3.10.1/ol.css" type="text/css">
+	<script src="inc/ol/v3.10.1/ol-debug.js"></script> 
+	
+	<!-- 
+	defiant.js, 제이슨을 분석하기 위하여 추가된 라이브러리
+	http://www.defiantjs.com/ 
+	-->
+	<script src="inc/defiant/1.3.4/defiant-latest.js"></script> 
+
+<!-- geodtjs -->	
+	<!-- <script src="gitjs/yepnope.js" type="text/javascript"></script>
+	<script src="gitjs/geodtjs.js" type="text/javascript"></script> -->
+		<script src="dotb/dotb.js" type="text/javascript"></script>
+		<link rel="stylesheet" href="dotb/dotb.css" type="text/css">
+		<script src="dotb/command/cmd.js" type="text/javascript"></script>
+
+
+<body style="overflow:hidden">
+<script>
+
+
+wresize();
+ui.addLoader();
+ui.addHeader();
+ui.headers.addMenu("left", 140, ".B", function(){
+	
+});
+var menu1 = ui.headers.addMenu("left", 100, "Layer");
+var menu2 = ui.headers.addMenu("left", 100, "Draw");
+var menu3 = ui.headers.addMenu("left", 100, "Attribute");
+var menu4 = ui.headers.addMenu("left", 100, "Config");
+var menu5 = ui.headers.addMenu("left", 100, "Login", function(){
+	alert("logIn");
+});
+ui.headers.addSubMenu(menu1, 100);
+ui.headers.addSubMenu(menu2, 100);
+ui.headers.addSubMenu(menu3, 100);
+ui.headers.addSubMenu(menu4, 100);
+
+
+//ui.addFooter();
+ui.addContent();
+ui.addCommandBar();
+result.create();
+
+
+//커맨드 등록
+cmd.createCmd("map", "load", loadBaseMap);
+cmd.createCmd("map", "zin", zoomin);
+cmd.createCmd("map", "zout", zoomout);
+cmd.createCmd("map", "convert", convertBaseMap);
+cmd.createCmd("wfs", "http", GetWFSFeautre);
+cmd.createCmd("wms", "http", getWMSLayer);
+cmd.createCmd("map", "center", getCenterPoint);
+
+//레이어 관련 커맨드 등록
+cmd.createCmd("layer", "vector", createVectorLayer);
+cmd.createCmd("layer", "list", getLayerList);
+cmd.createCmd("test", "test", test);
+
+
+cmd.createCmd("cmd", "list", getCommandList);
+</script>
+
+
+</body>
+</html>
