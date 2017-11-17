@@ -95,4 +95,5 @@ public void getAttr3(Node _node, JSONArray _arjObj){
 
 
 
-%><%=start(request.getParameter("url"), request.getParameter("name"), request.getParameter("layer"))%>
+%>
+<%=start(request.getParameter("url"), request.getParameter("name"), request.getParameter("layer"))%>
